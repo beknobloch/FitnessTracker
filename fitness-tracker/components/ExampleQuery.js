@@ -7,21 +7,21 @@ import { Button } from "react-native-elements";
 //this component shows how to query and display data in firebase
 function ExampleQuery(){
     //variables
-    const [testList, setTestList] = useState([]) //contents of database as array of objects
+    const [testList, setTestList] = useState([]) //contents of database as array of json objects
     const [userCollectionRef, setUserCollectionRef] = useState(collection(db, "test")) //raw contents of database collection "test"
     
     //gets list of documents from database in a format that js can read
     const getDocList = async () =>{
         try {
             const data = await getDocs(userCollectionRef)
-            console.log(data) // raw data that's unformatted and not usable yet
+            //console.log(data) // raw data that's unformatted and not usable yet
 
-            //formats the data as an array containing js objects with each object representing a document on firebase
+            //formats the data as an array containing json objects with each object representing a document on firebase
             const filteredData = data.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,
             }))
-            console.log(filteredData)
+            //console.log(filteredData) // array of json objects
             setTestList(filteredData)
         } catch (error) {
             console.log(error)

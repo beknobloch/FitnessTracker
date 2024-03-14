@@ -9,12 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/stack": "^6.3.28",
     "expo": "~50.0.6",
     "expo-status-bar": "~1.11.1",
     "firebase": "^10.8.1",
     "react": "18.2.0",
     "react-native": "0.73.4",
-    "react-native-elements": "^3.4.3"
+    "react-native-elements": "^3.4.3",
+    "react-native-gesture-handler": "^2.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
