@@ -20,6 +20,7 @@ function Signup(props){
     //async function that creates an account for the user
     const createAccount = async () => {
         try {
+            //after account is created, the user is automatically signed in
             await createUserWithEmailAndPassword(auth, email, password)
             addUser()
             Alert.alert("Account created! Redirecting to home page...", undefined, [

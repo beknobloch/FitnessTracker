@@ -4,8 +4,7 @@ import { Button } from "react-native-elements";
 import { auth } from "../config/firebase";
 import { signOut } from "firebase/auth";
 
-function SignOut(){
-
+function SignOut(props){
     //async function that signs out user
     const logout = async () => {
         try {
@@ -16,7 +15,7 @@ function SignOut(){
     }
 
     return(
-        <Button title="Sign out" disabled={!auth?.currentUser} onPress={logout} disabledStyle={styles.buttonDisabled}/>
+        <Button title="Sign out" disabled={!props.loggedIn} onPress={logout} disabledStyle={styles.buttonDisabled}/>
     )
 }
 

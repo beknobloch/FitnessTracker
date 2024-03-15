@@ -1,24 +1,35 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
 import { auth } from '../config/firebase'
 import SignOut from '../components/SignOut';
 
-// This is a sample screen only to show how stack screen navigation works. Remove this in later versions of the project 
+// Home screen user can see after logging in or creating an account
 function Home(props){
-    const userCollectionRef = collection(db, "users")
-    
+    //const userCollectionRef = collection(db, "users")
+    const [loggedIn, setLoggedIn] = useState(false)
+
+        //listens for if user signs in/out
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((state) => {
+            setLoggedIn(state);
+        }); 
+        return () => unsubscribe();
+    }, []);
+
     return(
         <View style={styles.container}>
             <Text>Home screen text!</Text>
+
+            {/* This button can also be removed in future prototypes */}
             <Button title="Go back to starting page" onPress={() => props.navigation.navigate('Start')}/>
 
-            {auth?.currentUser ? (
-              <Text>Logged in, hello {}</Text>
+            {loggedIn ? (
+              <Text>Logged in, hello {auth?.currentUser.email}</Text>
             ):(
               <Text>Not logged in</Text>
             )}
-            <SignOut />
+            <SignOut loggedIn={loggedIn} />
         </View>
     )
 }
