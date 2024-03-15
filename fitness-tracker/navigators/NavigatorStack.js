@@ -1,7 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import Start from '../screens/Start';
 import Home from '../screens/Home';
-import SampleScreen from '../screens/SampleScreen';
+import Login from '../screens/Login';
+import Signup from '../screens/Signup';
 
 const Stack = createStackNavigator();
 
@@ -26,9 +28,11 @@ There's a few other methods but these are the 2 we're probably gonna need the mo
 function NavigatorStack() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home}/>
-        <Stack.Screen name="SampleScreen" component={SampleScreen} />
+      <Stack.Navigator /*initialRouteName="Home" */>
+        <Stack.Screen name="Start" component={Start}/>
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
       </Stack.Navigator>
     </NavigationContainer>
   );
