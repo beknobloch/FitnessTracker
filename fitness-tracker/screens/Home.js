@@ -1,27 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import ExampleQuery from '../components/ExampleQuery';
-import { Button } from 'react-native-elements';
+import React, {useState, useEffect} from "react";
+import { Text, View, StyleSheet } from "react-native";
+import { Button } from "react-native-elements";
+import { auth } from '../config/firebase'
+import SignOut from '../components/SignOut';
 
-function Home(props) {
-  return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+// Home screen user can see after logging in or creating an account
+function Home(props){
+    //const userCollectionRef = collection(db, "users")
+    const [loggedIn, setLoggedIn] = useState(false)
 
-      {/* Remove the ExampleQuery JSX tag below when real project starts */}
-      <ExampleQuery />
-      <Button title='Go to sample screen' onPress={() => props.navigation.navigate('SampleScreen')}/>
-    </View>
-  );
+        //listens for if user signs in/out
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged((state) => {
+            setLoggedIn(state);
+        }); 
+        return () => unsubscribe();
+    }, []);
+
+    return(
+        <View style={styles.container}>
+            <Text>Home screen text!</Text>
+
+            {/* This button can also be removed in future prototypes */}
+            <Button title="Go back to starting page" onPress={() => props.navigation.navigate('Start')}/>
+
+            {loggedIn ? (
+              <Text>Logged in, hello {auth?.currentUser.email}</Text>
+            ):(
+              <Text>Not logged in</Text>
+            )}
+            <SignOut loggedIn={loggedIn} />
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
 export default Home;

@@ -43,6 +43,7 @@ function ExampleQuery(){
     return(
         <View>
             <Text>{'\n'}This component fetches data from collection "test" in firebase and displays the result </Text>
+            <Text>{'`n'}Remove this in future prototypes</Text>
             <Button title="Press me!" onPress={updateDb}/>
             
             {/* Needs to check if testList has anything

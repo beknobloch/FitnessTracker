@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mamorales5523.fitness-tracker"
     },
     "android": {
       "adaptiveIcon": {
