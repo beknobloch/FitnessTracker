@@ -1,6 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { Button } from "react-native-elements";
 import { auth } from '../config/firebase'
 import SignOut from '../components/SignOut';
 
@@ -18,7 +16,7 @@ function Home(props){
     }, []);
 
     return(
-        <View style={styles.container}>
+        <div>
             <Text>Home screen text!</Text>
 
             {/* This button can also be removed in future prototypes */}
@@ -30,16 +28,7 @@ function Home(props){
               <Text>Not logged in</Text>
             )}
             <SignOut loggedIn={loggedIn} />
-        </View>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
 export default Home;

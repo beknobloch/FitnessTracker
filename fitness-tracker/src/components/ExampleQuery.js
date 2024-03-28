@@ -1,8 +1,6 @@
 import React, { useState, useEffect }from "react";
-import { StyleSheet, Text, View} from 'react-native';
 import { db } from "../config/firebase";
 import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc} from 'firebase/firestore';
-import { Button } from "react-native-elements";
 
 //this component shows how to query and display data in firebase
 function ExampleQuery(){
@@ -41,10 +39,10 @@ function ExampleQuery(){
     }, [userCollectionRef]) 
 
     return(
-        <View>
-            <Text>{'\n'}This component fetches data from collection "test" in firebase and displays the result </Text>
-            <Text>{'`n'}Remove this in future prototypes</Text>
-            <Button title="Press me!" onPress={updateDb}/>
+        <div>
+            <p>{'\n'}This component fetches data from collection "test" in firebase and displays the result </p>
+            <p>{'\n'}Remove this in future prototypes</p>
+            <button onClick={updateDb}>Press me!</button>
             
             {/* Needs to check if testList has anything
             If it doesn't, that means the fetch from the database isn't complete and we can't display the list yet    
@@ -52,21 +50,21 @@ function ExampleQuery(){
             {testList.length > 0 ? (
                 //iterates through testList to display each document and all of its fields
                 testList.map((item, i) => (
-                    <View key={'item_' + i}>
-                        <Text>Item #{i+1}</Text>
+                    <div key={'item_' + i}>
+                        <p>Item #{i+1}</p>
 
                         {//This iterates through each field to display them all
                         Object.keys(item).map((key, index) => (
-                            <Text key={index}>{key}: {item[key]}</Text>
+                            <p key={index}>{key}: {item[key]}</p>
                         ))}
-                        <Text>{'\n'}</Text>
-                    </View>
+                        <p>{'\n'}</p>
+                    </div>
                 ))
             ) : (
-                <Text>Loading...</Text>
+                <p>Loading...</p>
             )}
 
-        </View>
+        </div>
     )
 }
 

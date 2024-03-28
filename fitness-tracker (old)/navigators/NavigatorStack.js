@@ -1,9 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import Start from '../screens/Start';
-import Home from '../screens/Home';
-import Login from '../screens/Login';
-import Signup from '../screens/Signup';
+import Start from '../../fitness-tracker/src/screens/Start';
+import Home from '../../fitness-tracker/src/screens/Home';
+import Login from '../../fitness-tracker/src/screens/Login';
+import Signup from '../../fitness-tracker/src/screens/Signup';
 
 const Stack = createStackNavigator();
 
