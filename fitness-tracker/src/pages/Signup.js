@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Alert, DatePic } from "react-native";
-import { Button } from "react-native-elements";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../config/firebase'
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 function Signup(props){
     // variables
@@ -23,7 +20,7 @@ function Signup(props){
             //after account is created, the user is automatically signed in
             await createUserWithEmailAndPassword(auth, email, password)
             addUser()
-            Alert.alert("Account created! Redirecting to home page...", undefined, [
+            alert("Account created! Redirecting to home page...", undefined, [
                 {
                     text: "Let's get started!",
                     onPress: () => {
@@ -41,7 +38,7 @@ function Signup(props){
             setName("")
         } catch (error) {
             console.log(error)
-            Alert.alert("Incorrect username or password")
+            alert("Incorrect username or password")
         } 
     }
 
@@ -63,70 +60,27 @@ function Signup(props){
         }
     }
     return(
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Name" 
-                    onChangeText={setName}
-                    value={name}
+        <div>
+                <input 
+                    placeholder="Name"
+                    onChange={(e) => setName(e.target.value)}
                 />
+                <div>
+                    <p>Date of birth: </p>
+                    {/* Insert date picker  */}
+                </div>
 
-                <View style={styles.rowBox}>
-                    <Text style={styles.text}>Date of birth: </Text>
-                    <DateTimePicker
-                        value={birthday}
-                        mode='date'
-                        onChange={(event, selectedDate) => {
-                            setBirthday(selectedDate)
-                        }}
-                    />
-                </View>
-
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Email" 
-                    onChangeText={setEmail}
-                    value={email}
+                <input 
+                    placeholder="Email"
+                    onChange={(e) => setEmail(e.target.value)}
                 />
-                <TextInput 
-                    style={styles.input} 
-                    placeholder="Password" 
-                    
-                    // bug: when secureTextEntry is true, screen shakes when typing in email text input
-                    secureTextEntry={false}
-                    onChangeText={setPassword}
-                    value={password}
+                <input 
+                    placeholder="Password"
+                    type="password"
+                    onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button title="Create account" onPress={createAccount} />
-        </KeyboardAvoidingView>
+                <button onClick={createAccount}>Create Account</button>
+        </div>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    button: {
-      paddingVertical: 5,
-    },
-    input: {
-        height: 40, 
-        width: 200, 
-        borderColor: 'black',
-        borderWidth: 1, 
-        marginBottom: 20, 
-        padding: 5,
-    },
-    rowBox: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingBottom: 20
-    },
-    text: {
-        fontSize: 20
-    }
-  });
 export default Signup;

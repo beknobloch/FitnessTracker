@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import ExampleQuery from './components/ExampleQuery';
 import Start from './pages/Start';
 import React from 'react';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -15,7 +17,7 @@ function App() {
             <Routes>
               {/* Redirect from base URL to /home */}
               <Route path="/" element={<Navigate replace to="/home" />} />
-              <Route path="/home" element={<Start />} />
+              <Route path="/home" element={<Login />} />
             </Routes>
           </Router>
         </header>

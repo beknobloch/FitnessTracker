@@ -17,15 +17,15 @@ function Home(props){
 
     return(
         <div>
-            <Text>Home screen text!</Text>
+            <p>Home screen p!</p>
 
             {/* This button can also be removed in future prototypes */}
-            <Button title="Go back to starting page" onPress={() => props.navigation.navigate('Start')}/>
+            <button title="Go back to starting page" onPress={() => props.navigation.navigate('Start')}/>
 
             {loggedIn ? (
-              <Text>Logged in, hello {auth?.currentUser.email}</Text>
+              <p>Logged in, hello {auth?.currentUser.email}</p>
             ):(
-              <Text>Not logged in</Text>
+              <p>Not logged in</p>
             )}
             <SignOut loggedIn={loggedIn} />
         </div>

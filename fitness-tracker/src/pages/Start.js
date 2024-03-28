@@ -10,7 +10,7 @@ function Start(props) {
 
       {/* Remove the ExampleQuery and button JSX tag below when real project starts */}
       <ExampleQuery />
-      <button title='Skip login' onPress={() => props.navigation.navigate('Home')}/>
+      <button onPress={() => props.navigation.navigate('Home')}>Skip login</button>
     </div>
   );
 }
