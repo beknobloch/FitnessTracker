@@ -19,8 +19,20 @@
   color: white;
   z-index: 1000;
   padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
+.navbarLinks{
+  padding-inline: 10px;
+}
+
+.authButtonContainer{
+  display: flex;
+  justify-content: right;
+  padding-inline: 10px;
+  font-size: small;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
