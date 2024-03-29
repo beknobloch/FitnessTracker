@@ -1,16 +1,21 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import ExampleQuery from '../components/ExampleQuery';
-import React from 'react';
 
-function Start(props) {
+function Start() {
+  const navigate = useNavigate(); // Use useNavigate hook for navigation
+  const [showExampleQuery, setShowExampleQuery] = useState(false); // State to control the visibility of ExampleQuery
+
   return (
     <div>
       <p>Welcome to our Fitness Tracker!</p>
-      <button onClick={() => props.navigation.navigate('Login')}>Log in</button>
-      <button onClick={() => props.navigation.navigate('Signup')}>Sign up</button>
-
-      {/* Remove the ExampleQuery and button JSX tag below when real project starts */}
-      <ExampleQuery />
-      <button onPress={() => props.navigation.navigate('Home')}>Skip login</button>
+      <button onClick={() => navigate('/login')}>Log in</button>
+      <button onClick={() => navigate('/signup')}>Sign up</button>
+      {/* Button to toggle the visibility of ExampleQuery */}
+      <button onClick={() => setShowExampleQuery(!showExampleQuery)}>Toggle Example Query</button>
+      {/* Conditionally render ExampleQuery based on showExampleQuery state */}
+      {showExampleQuery && <ExampleQuery />}
+      <button onClick={() => navigate('/home')}>Skip login</button>
     </div>
   );
 }

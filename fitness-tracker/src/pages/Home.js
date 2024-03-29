@@ -1,34 +1,31 @@
-import React, {useState, useEffect} from "react";
-import { auth } from '../config/firebase'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { auth } from '../config/firebase';
 import SignOut from '../components/SignOut';
 
-// Home screen user can see after logging in or creating an account
-function Home(props){
-    //const userCollectionRef = collection(db, "users")
-    const [loggedIn, setLoggedIn] = useState(false)
+function Home() {
+    const [loggedIn, setLoggedIn] = useState(false);
+    const navigate = useNavigate(); // Use useNavigate hook for navigation
 
-        //listens for if user signs in/out
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((state) => {
-            setLoggedIn(state);
-        }); 
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            setLoggedIn(!!user);
+        });
         return () => unsubscribe();
     }, []);
 
-    return(
+    return (
         <div>
-            <p>Home screen p!</p>
-
-            {/* This button can also be removed in future prototypes */}
-            <button title="Go back to starting page" onPress={() => props.navigation.navigate('Start')}/>
-
+            <p>Home screen!</p>
+            <button onClick={() => navigate('/start')}>Go back to starting page</button>
             {loggedIn ? (
-              <p>Logged in, hello {auth?.currentUser.email}</p>
-            ):(
+              <p>Logged in, hello {auth.currentUser?.email}</p>
+            ) : (
               <p>Not logged in</p>
             )}
             <SignOut loggedIn={loggedIn} />
         </div>
-    )
+    );
 }
+
 export default Home;
