@@ -17,7 +17,9 @@ function App() {
             <Routes>
               {/* Redirect from base URL to /home */}
               <Route path="/" element={<Navigate replace to="/home" />} />
-              <Route path="/home" element={<Login />} />
+              <Route path="/home" element={<Start />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signUp" element={<Signup />} />
             </Routes>
           </Router>
         </header>
