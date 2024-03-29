@@ -42,7 +42,7 @@ function AuthStatus(){
                 ):(
                     <div>
                         <button onClick={() => handleClick('login')}>Log in</button>
-                        <button onClick={() => handleClick('signUp')}>Sign up</button>
+                        <button onClick={() => handleClick('signup')}>Sign up</button>
                     </div>
                 )}
             

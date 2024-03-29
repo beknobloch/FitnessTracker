@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../config/firebase'
+import { useNavigate } from "react-router-dom";
 
 function Login(props){
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+
+    const navigate = useNavigate();
 
     //async function that signs in user
     const logIn = async () => {
@@ -20,7 +23,8 @@ function Login(props){
             /*
             props.navigation.popToTop();
             props.navigation.replace('Home')*/
-            alert('logged in!')
+
+            navigate('/home');
             
         } catch (error) {
             console.log(error)
