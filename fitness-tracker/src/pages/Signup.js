@@ -1,25 +1,23 @@
+
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from '../config/firebase';
 import { useNavigate } from "react-router-dom";
+import { collection, addDoc } from "firebase/firestore"; 
 
 function Signup() {
+    const [birthday, setBirthday] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [birthday, setBirthday] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-
     const navigate = useNavigate();
-
     const userCollectionRef = collection(db, "users");
 
     const createAccount = async () => {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             await addUser();
-            // Navigate to home page after successful signup
             navigate('/home');
         } catch (error) {
             console.error(error);
@@ -32,7 +30,7 @@ function Signup() {
             await addDoc(userCollectionRef, {
                 name: name, 
                 uid: auth.currentUser.uid, 
-                birthday: birthday, // No need to format here, you can handle formatting when displaying if needed
+                birthday: birthday,
             });
         } catch (error) {
             console.error(error);
@@ -41,30 +39,34 @@ function Signup() {
 
     return (
         <div>
+            <h1>Sign Up</h1>
+            <label htmlFor="birthday" style={{ fontSize: "14px" }}>Date of birth:  </label>
+            <input 
+                id="birthday"
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+            />
+            <br />
             <input 
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
-            <div>
-                <p>Date of birth:</p>
-                <input 
-                    type="date"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e.target.value)}
-                />
-            </div>
+            <br />
             <input 
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
+            <br />
             <input 
                 placeholder="Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
+            <br />
             <button onClick={createAccount}>Create Account</button>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>
