@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
-import { auth } from '../config/firebase'
-import SignOut from '../components/SignOut';
+import { auth } from '../../../fitness-tracker (old)/config/firebase'
+import SignOut from '../../../fitness-tracker (old)/components/SignOut';
 
 // Home screen user can see after logging in or creating an account
 function Home(props){
