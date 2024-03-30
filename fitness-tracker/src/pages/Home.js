@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { auth } from '../config/firebase';
 import SignOut from '../components/SignOut';
+import FitbitDataComponent from '../components/FitbitDataComponent.js';
 
 function Home() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -24,6 +25,7 @@ function Home() {
               <p>Not logged in</p>
             )}
             <SignOut loggedIn={loggedIn} />
+            <FitbitDataComponent />
         </div>
     );
 }
