@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import FitbitDailyData from './FitbitDailyData';
 
 
 const FitbitDataComponent = () => {
+    
     const [accessToken, setAccessToken] = useState('');
-
+    
     const [profile, setProfile] = useState('');
-    const [activity, setActivity] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
 
     /************ Change for your app *************/
     const clientId = '23RRWK';
@@ -28,18 +28,6 @@ const FitbitDataComponent = () => {
             initiateAuthentication();
         }
 
-
-        // Get today's date
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0
-        const day = String(today.getDate()).padStart(2, '0');
-
-        // Format the date as YYYY-MM-DD
-        const formattedDate = `${year}-${month}-${day}`;
-
-        // Set the default date
-        setSelectedDate(formattedDate);
     }, []);
 
     const initiateAuthentication = () => {
@@ -92,19 +80,6 @@ const FitbitDataComponent = () => {
     // functions called after the authorization is complete
     const functionsRan = async (accessToken) => {
         getProfile(accessToken);
-        getActivitySummary(accessToken, '2024-03-29'); // Adjust the date range as needed
-    }
-
-    const APIRequest = async (endpoint, requestHeaders) => {
-        const response = await fetch(endpoint, requestHeaders);
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } else {
-            console.error('Error fetching Fitbit data');
-        }
     }
 
     const getProfile = async (accessToken) => {
@@ -119,42 +94,23 @@ const FitbitDataComponent = () => {
 
     };
 
-    const getActivitySummary = async (accessToken, date) => {
-        const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/date/${date}.json`;
-        const timeSeriesHeaders = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            }
-        };
+    const APIRequest = async (endpoint, requestHeaders) => {
+        const response = await fetch(endpoint, requestHeaders);
 
-        setActivity(await APIRequest(timeSeriesEndpoint, timeSeriesHeaders));
-    };
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } else {
+            console.error('Error fetching Fitbit data');
+        }
+    }
 
-    /*  ------------------------------ Other Functions ------------------------------  */
-
-    const handleDateChange = (event) => {
-        const newDate = event.target.value;
-        setSelectedDate(newDate);
-        getActivitySummary(accessToken, newDate !== "" ? newDate : "03-29-24");
-    };
 
     return (
         <div>
-        <h2>Hi {profile !== "" ? profile.user.fullName : "World"}!
-        <br></br>
-        <label for="datepicker">Select a date:</label>
-            <input type="date" 
-                id="datepicker" 
-                name="datepicker" 
-                value={selectedDate} 
-                onChange={handleDateChange} ></input>
-        <br></br>
-        Your daily steps on {selectedDate ? selectedDate : "???"} is {activity && activity.summary ? activity.summary.steps : "0"} steps.
-        <br></br>
-        You engaged in light activity for {activity !== "" ? activity.summary.lightlyActiveMinutes : "0"} minutes.
-        <br></br>
-        You engaged in intense activity for {activity !== "" ? activity.summary.veryActiveMinutes : "0"} minutes.
-        </h2>
+        <h2>Hi {profile !== "" ? profile.user.fullName : "World"}!</h2>
+        <FitbitDailyData accessToken={accessToken}/>
         </div>
     )
 };
