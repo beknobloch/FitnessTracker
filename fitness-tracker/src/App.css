@@ -62,3 +62,12 @@
     transform: rotate(360deg);
   }
 }
+
+#datepicker {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none; /* Remove the default focus outline */
+  margin: 10px;
+}
