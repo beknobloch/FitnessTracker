@@ -17,7 +17,9 @@ const FitbitDailyData = ({ accessToken }) => {
 
         // Set the default date
         setSelectedDate(formattedDate);
-    }, [])
+
+        if (accessToken) { getActivitySummary(accessToken, formattedDate) };
+    }, [accessToken])
 
     /*  ------------------------------ API Calls ------------------------------  */
 
@@ -26,7 +28,6 @@ const FitbitDailyData = ({ accessToken }) => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             return data;
         } else {
             console.error('Error fetching Fitbit data');
@@ -61,11 +62,11 @@ const FitbitDailyData = ({ accessToken }) => {
                 value={selectedDate} 
                 onChange={handleDateChange} ></input>
         <br></br>
-        Your daily steps on {selectedDate ? selectedDate : "???"} is {activity && activity.summary ? activity.summary.steps : "0"} steps.
+        On {selectedDate ? selectedDate : "???"}, you walked {activity && activity.summary ? activity.summary.steps : "0"} steps...
         <br></br>
-        You engaged in light activity for {activity !== "" ? activity.summary.lightlyActiveMinutes : "0"} minutes.
+        engaged in light activity for {activity && activity.summary ? activity.summary.lightlyActiveMinutes : "0"} minutes...
         <br></br>
-        You engaged in intense activity for {activity !== "" ? activity.summary.veryActiveMinutes : "0"} minutes.
+        and engaged in intense activity for {activity && activity.summary ? activity.summary.veryActiveMinutes : "0"} minutes.
         </div>
     )
 };

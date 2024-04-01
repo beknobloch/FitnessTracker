@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import FitbitDailyData from './FitbitDailyData';
-
+import FitbitStepGraph from './FitbitStepGraph';
 
 const FitbitDataComponent = () => {
     
@@ -99,7 +99,6 @@ const FitbitDataComponent = () => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             return data;
         } else {
             console.error('Error fetching Fitbit data');
@@ -109,8 +108,10 @@ const FitbitDataComponent = () => {
 
     return (
         <div>
-        <h2>Hi {profile !== "" ? profile.user.fullName : "World"}!</h2>
+        <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}!</h2>
         <FitbitDailyData accessToken={accessToken}/>
+        <hr></hr>
+        <FitbitStepGraph accessToken={accessToken}/>
         </div>
     )
 };
