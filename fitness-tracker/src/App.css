@@ -32,6 +32,7 @@
   justify-content: right;
   padding-inline: 10px;
   font-size: small;
+  text-align: center;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -70,4 +71,11 @@
   font-size: 16px;
   outline: none; /* Remove the default focus outline */
   margin: 10px;
+}
+
+.startPage{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

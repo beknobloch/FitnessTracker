@@ -4,7 +4,7 @@ import { auth } from '../config/firebase'
 import { signOut } from 'firebase/auth'
 
 //if the user is not logged in, displays log in and sign up buttons. If logged in, displays something like "signed in as x"
-function AuthStatus(){
+function AuthStatus({ displayLogout }){
     let navigate = useNavigate(); 
 
     const [user, setUser] = useState(auth?.currentUser?.email)
@@ -36,7 +36,11 @@ function AuthStatus(){
                 {user ? (
                     <>
                         <p>Logged in as {auth?.currentUser?.email}</p>
-                        <button onClick={logout}>Log out</button>
+                        {displayLogout ?(
+                            <button onClick={logout}>Log out</button>
+                        ):(
+                            <button onClick={() => handleClick('home')}>Go check out your Fitbit data!</button>                
+                        )}  
                     </>
                     
                 ):(

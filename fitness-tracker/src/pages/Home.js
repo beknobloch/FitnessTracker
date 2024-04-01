@@ -16,14 +16,15 @@ function Home() {
 
     return (
         <div>
-            <p>Home screen!</p>
-            <button onClick={() => navigate('/start')}>Go back to starting page</button>
             {loggedIn ? (
-              <p>Logged in, hello {auth.currentUser?.email}</p>
+                <div>
+                    <p>Logged in, hello {auth.currentUser?.email}</p>
+                    <FitbitDataComponent />
+                </div>
             ) : (
               <p>Not logged in</p>
             )}
-            <FitbitDataComponent />
+            
         </div>
     );
 }
