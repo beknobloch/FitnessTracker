@@ -18,7 +18,6 @@ function Home() {
         <div>
             {loggedIn ? (
                 <div>
-                    <p>Logged in, hello {auth.currentUser?.email}</p>
                     <FitbitDataComponent />
                 </div>
             ) : (

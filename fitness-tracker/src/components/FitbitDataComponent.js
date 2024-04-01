@@ -107,11 +107,17 @@ const FitbitDataComponent = () => {
 
 
     return (
-        <div>
-        <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}!</h2>
-        <FitbitDailyData accessToken={accessToken}/>
-        <hr></hr>
-        <FitbitStepGraph accessToken={accessToken}/>
+        <div className={"container"}>
+            <div className="left-panel">
+                {/* Content for the left panel */}
+                <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}</h2>
+                <FitbitDailyData accessToken={accessToken}/>
+            </div>
+            <div className="right-panel">
+            {/* Content for the right panel */}
+                <hr></hr>
+                <FitbitStepGraph accessToken={accessToken}/>
+            </div>
         </div>
     )
 };

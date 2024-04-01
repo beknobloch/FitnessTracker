@@ -35,9 +35,9 @@ function AuthStatus({ displayLogout }){
         <div className="authButtonContainer">
                 {user ? (
                     <>
-                        <p className={'paragraph'}>Logged in as {auth?.currentUser?.email}</p>
+                        <p className={'paragraph'}>{auth?.currentUser?.email}</p>
                         {displayLogout ? (
-                            <button className={'button'} onClick={logout}>Log out</button>
+                            <button className={'button-logout'} onClick={logout}>Log out</button>
                         ) : (
                             <button className={'button'} onClick={() => handleClick('home')}>Go check out your Fitbit
                                 data!</button>

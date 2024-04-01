@@ -79,7 +79,7 @@ const FitbitStepGraph = ({ accessToken }) => {
 
     return (
         <div>
-            {!chartLoading && !chartData[0] && <button id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
+            {!chartLoading && !chartData[0] && <button className={'button'} id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
             {chartLoading && <h3>Loading...</h3>}
             {chartData[0] && <LineChart
                 width={500}
