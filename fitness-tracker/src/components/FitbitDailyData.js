@@ -55,7 +55,7 @@ const FitbitDailyData = ({ accessToken }) => {
 
     return (
         <div>
-        <label for="datepicker">Select a date:</label>
+        <label htmlFor="datepicker">Select a date:</label>
             <input type="date" 
                 id="datepicker" 
                 name="datepicker" 
