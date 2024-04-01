@@ -93,8 +93,8 @@ const FitbitStepGraph = ({ accessToken }) => {
                 }}
                 >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
+                <XAxis dataKey="name" label="Date" />
+                <YAxis label="Count" />
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }}/>
