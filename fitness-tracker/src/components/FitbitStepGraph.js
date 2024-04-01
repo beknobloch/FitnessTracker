@@ -40,7 +40,7 @@ const FitbitStepGraph = ({ accessToken }) => {
             let chartData = [];
             stepData.forEach((stepCount, i) => {
                 chartData.push({
-                    name: dates[i],
+                    name: dates[dates.length - 1 - i],
                     steps: stepCount
                 });
             });
@@ -88,15 +88,15 @@ const FitbitStepGraph = ({ accessToken }) => {
                 margin={{
                     top: 5,
                     right: 30,
-                    left: 20,
-                    bottom: 5
+                    left: 70,
+                    bottom: 35
                 }}
                 >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" label="Date" />
-                <YAxis label="Count" />
+                <XAxis dataKey="name" label={{ value: 'Date', position: 'insideBottom', offset: -20}}/>
+                <YAxis label={{ value: 'Step Count', angle: -90, position: 'insideLeft', offset: -30, style: { textAnchor: 'middle' } }} />
                 <Tooltip />
-                <Legend />
+                <Legend verticalAlign="top" align="right"/>  
                 <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }}/>
             </LineChart>}
         </div>
