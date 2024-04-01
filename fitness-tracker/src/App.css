@@ -27,6 +27,26 @@
   padding-inline: 10px;
 }
 
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf50; /* Green button background color */
+  color: white; /* Button text color */
+  border-radius: 10px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+.button:hover {
+  background-color: #388e3c; /* Darker green background color on hover */
+}
+
+.paragraph {
+  margin-right: 20px; /* Add spacing of 20px to the right */
+}
+
 .authButtonContainer{
   display: flex;
   justify-content: right;
@@ -53,6 +73,22 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff; /* Button background color */
+  color: white; /* Button text color */
+  border-radius: 10px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+.button-link:hover {
+  background-color: #0056b3; /* Darker background color on hover */
 }
 
 @keyframes App-logo-spin {
