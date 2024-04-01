@@ -3,34 +3,39 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from '../config/firebase';
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, doc, setDoc } from "firebase/firestore"; 
 
 function Signup() {
     const [birthday, setBirthday] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isCoach, setIsCoach] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const userCollectionRef = collection(db, "users");
 
     const createAccount = async () => {
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            await addUser();
-            navigate('/home');
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            await addUser(user.uid); 
+            // Redirect based on the isCoach flag
+            navigate(isCoach ? '/homecoach' : '/home');
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to create an account. Please check your inputs and try again.");
         }
     };
 
-    const addUser = async () => {
+    const addUser = async (uid) => { // Pass UID as a parameter
         try {
-            await addDoc(userCollectionRef, {
+            // Set the UID as the document ID in Firestore
+            const docRef = doc(userCollectionRef, uid); // Use UID as the document ID
+            await setDoc(docRef, { // Assuming you have imported setDoc from firestore
                 name: name, 
-                uid: auth.currentUser.uid, 
                 birthday: birthday,
+                isCoach: isCoach,
             });
         } catch (error) {
             console.error(error);
@@ -65,6 +70,14 @@ function Signup() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <label htmlFor="isCoach">Sign up as a coach:</label>
+            <input
+                id="isCoach"
+                type="checkbox"
+                checked={isCoach}
+                onChange={(e) => setIsCoach(e.target.checked)}
             />
             <br />
             <button onClick={createAccount}>Create Account</button>

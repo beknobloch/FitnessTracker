@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { auth } from '../config/firebase';
 import FitbitDataComponent from '../components/FitbitDataComponent.js';
 
-function Home() {
+function HomeCoach() {
     const [loggedIn, setLoggedIn] = useState(false);
     const navigate = useNavigate(); // Use useNavigate hook for navigation
 
@@ -18,8 +18,7 @@ function Home() {
         <div>
             {loggedIn ? (
                 <div>
-                    <p>Logged in, hello {auth.currentUser?.email}</p>
-                    {/*<FitbitDataComponent />*/}
+                    <p>COACH PAGE {auth.currentUser?.email}</p>
                 </div>
             ) : (
               <p>Not logged in</p>
@@ -29,4 +28,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default HomeCoach;

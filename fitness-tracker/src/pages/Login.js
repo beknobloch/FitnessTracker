@@ -1,8 +1,9 @@
 
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 import { useNavigate } from "react-router-dom";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 
 function Login(props){
@@ -12,15 +13,31 @@ function Login(props){
 
     const logIn = async () => {
         try {
-            await signInWithEmailAndPassword(auth, email, password)
-            setEmail("");
-            setPassword("");
-            navigate('/home');
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Access Firestore
+            const db = getFirestore();
+            const userDoc = doc(db, "users", user.uid);
+            const userSnapshot = await getDoc(userDoc);
+            
+            // Check if isCoach is true or false
+            if (userSnapshot.exists()) {
+                const userData = userSnapshot.data();
+                if (userData.isCoach) {
+                    navigate('/coach-home');
+                } else {
+                    navigate('/home');
+                }
+            } else {
+                throw new Error("User data not found");
+            }
         } catch (error) {
             console.log(error);
             alert("Incorrect username or password");
         } 
     }
+    
 
     return(
         <div>
