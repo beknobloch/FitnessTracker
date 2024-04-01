@@ -4,8 +4,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 const FitbitStepGraph = ({ accessToken }) => {
 
     const [chartData, setChartData] = useState([]);
+    const [chartLoading, setChartLoading] = useState(false);
 
     const showGraph = async () => {
+        setChartLoading(true);
+
         try {
             // Initialize an array to store the dates
             let dates = [];
@@ -43,6 +46,7 @@ const FitbitStepGraph = ({ accessToken }) => {
             });
     
             setChartData(chartData);
+            setChartLoading(false);
         } catch (error) {
             console.error('Error fetching activity data:', error);
         }
@@ -75,7 +79,8 @@ const FitbitStepGraph = ({ accessToken }) => {
 
     return (
         <div>
-            {!chartData[0] && <button id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
+            {!chartLoading && !chartData[0] && <button id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
+            {chartLoading && <h3>Loading...</h3>}
             {chartData[0] && <LineChart
                 width={500}
                 height={300}
