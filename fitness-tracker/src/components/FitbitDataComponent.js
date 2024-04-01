@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-
+import FitbitDailyData from './FitbitDailyData';
+import FitbitStepGraph from './FitbitStepGraph';
 
 const FitbitDataComponent = () => {
+    
+    const [accessToken, setAccessToken] = useState('');
+    
     const [profile, setProfile] = useState('');
-    const [heartrate, setHeartrate] = useState('');
 
     /************ Change for your app *************/
     const clientId = '23RRWK';
@@ -24,6 +27,7 @@ const FitbitDataComponent = () => {
             // Authorization code is not present, initiate the authentication flow
             initiateAuthentication();
         }
+
     }, []);
 
     const initiateAuthentication = () => {
@@ -56,10 +60,12 @@ const FitbitDataComponent = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                const accessToken = data.access_token;
+                const accessTokenLocal = data.access_token;
+
+                setAccessToken(accessTokenLocal);
 
                 // Now you can use the access token to make requests to the Fitbit API
-                functionsRan(accessToken);
+                functionsRan(accessTokenLocal);
             }
             else {
                 console.error('Error exchanging authorization code for access token');
@@ -74,19 +80,6 @@ const FitbitDataComponent = () => {
     // functions called after the authorization is complete
     const functionsRan = async (accessToken) => {
         getProfile(accessToken);
-        getHeartRateTimeSeries(accessToken, '2024-02-02', '1d'); // Adjust the date range as needed
-    }
-
-    const APIRequest = async (endpoint, requestHeaders) => {
-        const response = await fetch(endpoint, requestHeaders);
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } else {
-            console.error('Error fetching Fitbit data');
-        }
     }
 
     const getProfile = async (accessToken) => {
@@ -101,25 +94,24 @@ const FitbitDataComponent = () => {
 
     };
 
-    const getHeartRateTimeSeries = async (accessToken, date, period) => {
-        const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/heart/date/${date}/${period}.json`;
-        const timeSeriesHeaders = {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            }
-        };
+    const APIRequest = async (endpoint, requestHeaders) => {
+        const response = await fetch(endpoint, requestHeaders);
 
-        setHeartrate(await APIRequest(timeSeriesEndpoint, timeSeriesHeaders));
-    };
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.error('Error fetching Fitbit data');
+        }
+    }
+
 
     return (
         <div>
-        <h2>Hi {profile != "" ? profile.user.fullName : "World"}! 
-        Your resting heartrate on {heartrate != "" ? heartrate?.['activities-heart'][0]?.dateTime : "YYYY-MM-DD"} is {heartrate != "" ? heartrate?.['activities-heart'][0]?.value.restingHeartRate : "???"} bpm
-        </h2>
-            <p>{JSON.stringify(profile)}</p>
-            <hr></hr>
-            <p>{JSON.stringify(heartrate)}</p>
+        <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}!</h2>
+        <FitbitDailyData accessToken={accessToken}/>
+        <hr></hr>
+        <FitbitStepGraph accessToken={accessToken}/>
         </div>
     )
 };

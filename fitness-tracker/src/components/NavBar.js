@@ -8,7 +8,7 @@ function NavBar() {
         <div className='navbarLinks'>
           <Link to="/home" className="link">Home</Link> 
         </div>
-        <AuthStatus />
+        <AuthStatus displayLogout={true}/>
     </nav>
   );
 }

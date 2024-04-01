@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { auth } from '../config/firebase';
-import SignOut from '../components/SignOut';
 import FitbitDataComponent from '../components/FitbitDataComponent.js';
 
 function Home() {
@@ -17,15 +16,15 @@ function Home() {
 
     return (
         <div>
-            <p>Home screen!</p>
-            <button onClick={() => navigate('/start')}>Go back to starting page</button>
             {loggedIn ? (
-              <p>Logged in, hello {auth.currentUser?.email}</p>
+                <div>
+                    <p>Logged in, hello {auth.currentUser?.email}</p>
+                    <FitbitDataComponent />
+                </div>
             ) : (
               <p>Not logged in</p>
             )}
-            <SignOut loggedIn={loggedIn} />
-            <FitbitDataComponent />
+            
         </div>
     );
 }

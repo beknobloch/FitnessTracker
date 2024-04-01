@@ -32,6 +32,7 @@
   justify-content: right;
   padding-inline: 10px;
   font-size: small;
+  text-align: center;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -61,4 +62,20 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#datepicker {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none; /* Remove the default focus outline */
+  margin: 10px;
+}
+
+.startPage{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
