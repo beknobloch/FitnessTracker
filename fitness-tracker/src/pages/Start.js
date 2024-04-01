@@ -9,7 +9,8 @@ function Start() {
 
   return (
     <div className='startPage'>
-      <p>Welcome to our Fitness Tracker!</p>
+      <h2>Welcome to our Fitness Tracker!</h2>
+      <p>Choose one of the options below to get started:</p>
       <AuthStatus displayLogout={false} nav={navigate}/>
       {/* Button to toggle the visibility of ExampleQuery */}
       {/*<button onClick={() => setShowExampleQuery(!showExampleQuery)}>Toggle Example Query</button>*/}
