@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const FitbitStepGraph = ({ accessToken }) => {
+const FitbitStepGraph = ({ accessToken, metric }) => {
 
     const [chartData, setChartData] = useState([]);
-    const [chartLoading, setChartLoading] = useState(false);
+    const [chartLoading, setChartLoading] = useState(true);
     
     const [weeksBack, setWeeksBack] = useState(0);
 
     useEffect( () => {
-        showGraph();
-    }, [weeksBack])
+        if (accessToken !== undefined && accessToken !== '') showGraph();
+    }, [weeksBack, accessToken]);
 
     const showGraph = async () => {
         setChartLoading(true);
@@ -38,9 +38,21 @@ const FitbitStepGraph = ({ accessToken }) => {
             for (const date of dates) {
                 const activitySummary = await getActivitySummary(accessToken, date);
                 if (activitySummary && activitySummary.summary) {
-                    stepData.unshift(activitySummary.summary.steps);
+
+
+                    // USE COMPONENT PARAMETER to add relevant metric to the graph data
+                    let dataEntry;
+                    metric==='steps' ? dataEntry = activitySummary.summary.steps :
+                    metric==='calories' ? dataEntry = activitySummary.summary.caloriesOut :
+                    metric==='resting heart rate' ? dataEntry = activitySummary.summary.restingHeartRate :
+                    metric==='elevation' ? dataEntry = activitySummary.summary.elevation :
+                    metric==='very active minutes' ? dataEntry = activitySummary.summary.veryActiveMinutes :
+                    dataEntry = activitySummary.summary.steps;
+
+
+                    stepData.unshift(dataEntry);
                 } else {
-                    console.error(`Activity summary for date ${date} is invalid or missing.`);
+                    console.log(`Activity summary for date ${date} is invalid or missing.`);
                 }
             }
     
@@ -55,7 +67,7 @@ const FitbitStepGraph = ({ accessToken }) => {
             setChartData(chartData);
             setChartLoading(false);
         } catch (error) {
-            console.error('Error fetching activity data:', error);
+            console.log('Error fetching activity data:', error);
         }
     };
 
@@ -63,7 +75,6 @@ const FitbitStepGraph = ({ accessToken }) => {
 
     const APIRequest = async (endpoint, requestHeaders) => {
         const response = await fetch(endpoint, requestHeaders);
-
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -86,13 +97,12 @@ const FitbitStepGraph = ({ accessToken }) => {
 
     return (
         <div>
-            {!chartLoading && !chartData[0] && <button className={'button'} id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
             {chartLoading && <h3>Loading...</h3>}
-            {chartData[0] && 
+            {accessToken!==undefined && chartData[0] && 
             <div>
                 <button className={'button'} onClick={() => {
                     setWeeksBack(weeksBack + 1);
-                }}>&lt; Prev Week</button>
+                }}>&lt; Prev Week</button> <span>      </span>
                 <button className={'button'} disabled={weeksBack === 0} onClick={() => {
                     if (weeksBack > 0)  {
                         setWeeksBack(weeksBack - 1);
