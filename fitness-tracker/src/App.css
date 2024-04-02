@@ -60,6 +60,21 @@
   transition: background-color 0.3s; /* Smooth transition on hover */
 }
 
+.button:disabled {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #666; /* Gray button background color */
+  color: white; /* Button text color */
+  border-radius: 25px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: not-allowed; /* Show cursor as pointer on hover */
+}
+
+.button:disabled:hover {
+  background-color: #666; /* Green button background color */
+}
+
 .button-logout {
   display: inline-block;
   padding: 5px 20px;

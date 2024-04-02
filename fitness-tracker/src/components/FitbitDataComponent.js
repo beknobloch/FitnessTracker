@@ -11,7 +11,7 @@ const FitbitDataComponent = () => {
     /************ Change for your app *************/
     const clientId = '23RRWK';
     const clientSecret = 'd7830394ff0e361521dba4551e48b594';
-    const redirectUri = 'https://fitness-tracker-a0407.web.app/home'; // the redirectURL in FitBit app
+    const redirectUri = 'http://localhost:3000/home'; // the redirectURL in FitBit app
 
     /*  ------------------------------ Authorization ------------------------------  */
 

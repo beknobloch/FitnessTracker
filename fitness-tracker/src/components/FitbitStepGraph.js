@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const FitbitStepGraph = ({ accessToken }) => {
 
     const [chartData, setChartData] = useState([]);
     const [chartLoading, setChartLoading] = useState(false);
+    
+    const [weeksBack, setWeeksBack] = useState(0);
+
+    useEffect( () => {
+        showGraph();
+    }, [weeksBack])
 
     const showGraph = async () => {
         setChartLoading(true);
@@ -15,7 +21,8 @@ const FitbitStepGraph = ({ accessToken }) => {
             const today = new Date();
 
             // Iterate through the last seven days
-            for (let i = 0; i < 7; i++) {
+            const weekAdjustment = 7 * weeksBack;
+            for (let i = weekAdjustment; i < weekAdjustment + 7; i++) {
                 let date = new Date(today); // Create a new date object for each iteration
                 date.setDate(today.getDate() - i);
                 const year = date.getFullYear();
@@ -81,6 +88,17 @@ const FitbitStepGraph = ({ accessToken }) => {
         <div>
             {!chartLoading && !chartData[0] && <button className={'button'} id='showStepGraph' onClick={accessToken ? () => {showGraph()} : () => {}}>See this week's steps</button>}
             {chartLoading && <h3>Loading...</h3>}
+            {chartData[0] && 
+            <div>
+                <button className={'button'} onClick={() => {
+                    setWeeksBack(weeksBack + 1);
+                }}>&lt; Prev Week</button>
+                <button className={'button'} disabled={weeksBack === 0} onClick={() => {
+                    if (weeksBack > 0)  {
+                        setWeeksBack(weeksBack - 1);
+                    }
+                }}>Next Week &gt;</button>
+            </div>}
             {chartData[0] && <LineChart
                 width={500}
                 height={300}
