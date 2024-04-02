@@ -1,0 +1,170 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+.link {
+  color: rgb(108, 108, 232);
+  text-decoration: underline;
+}
+.navbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: black;
+  color: white;
+  z-index: 1000;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbarLinks{
+  padding-inline: 10px;
+}
+
+.container {
+  display: flex; /* Use flexbox layout */
+}
+
+.left-panel, .right-panel {
+  flex: 1; /* Make both panels equally flexible */
+  padding: 20px; /* Add padding for spacing */
+}
+
+.left-panel {
+  background-color: #53585D; /* Style left panel */
+  border-top-left-radius: 10px; /* Rounded top-left corner */
+  border-bottom-left-radius: 10px; /* Rounded bottom-left corner */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.right-panel {
+ /* Style right panel */
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #F45D01; /* Green button background color */
+  color: white; /* Button text color */
+  border-radius: 25px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+.button:disabled {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #666; /* Gray button background color */
+  color: white; /* Button text color */
+  border-radius: 25px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: not-allowed; /* Show cursor as pointer on hover */
+}
+
+.button:disabled:hover {
+  background-color: #666; /* Green button background color */
+}
+
+.button-logout {
+  display: inline-block;
+  padding: 5px 20px;
+  background-color: lightslategray; /* Green button background color */
+  color: white; /* Button text color */
+  border-radius: 25px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+.button-logout:hover {
+  background-color: darkslategray; /* Darker green background color on hover */
+}
+
+.button:hover {
+  background-color: #C44B00; /* Darker green background color on hover */
+}
+
+.paragraph {
+  margin-right: 20px; /* Add spacing of 20px to the right */
+}
+
+.authButtonContainer{
+  display: flex;
+  justify-content: right;
+  padding-inline: 10px;
+  font-size: small;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #4A4D51;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #F45D01; /* Button background color */
+  color: white; /* Button text color */
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Remove underline */
+  border: none; /* Remove border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+  transition: background-color 0.3s; /* Smooth transition on hover */
+}
+
+.button-link:hover {
+  background-color: #C44B00; /* Darker background color on hover */
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#datepicker {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none; /* Remove the default focus outline */
+  margin: 10px;
+}
+
+.startPage{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

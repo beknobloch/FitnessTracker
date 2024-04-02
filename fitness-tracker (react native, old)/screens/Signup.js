@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Alert, DatePic } from "react-native";
 import { Button } from "react-native-elements";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../config/firebase'
+import { auth } from '../../../fitness-tracker (old)/config/firebase'
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../../../fitness-tracker (old)/config/firebase';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 function Signup(props){

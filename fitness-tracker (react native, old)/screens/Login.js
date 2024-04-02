@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Alert } from "react-native";
 import { Button } from "react-native-elements";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../config/firebase'
+import { auth } from '../../../fitness-tracker (old)/config/firebase'
 
 function Login(props){
     const [email, setEmail] = useState("")
