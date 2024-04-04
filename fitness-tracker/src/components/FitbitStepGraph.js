@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const FitbitStepGraph = ({ accessToken, metric }) => {
+const FitbitStepGraph = ({ accessToken }) => {
+
+    const [metric, setMetric] = useState('steps');
 
     const [chartData, setChartData] = useState([]);
     const [chartLoading, setChartLoading] = useState(true);
@@ -9,8 +11,21 @@ const FitbitStepGraph = ({ accessToken, metric }) => {
     const [weeksBack, setWeeksBack] = useState(0);
 
     useEffect( () => {
-        if (accessToken !== undefined && accessToken !== '') showGraph();
-    }, [weeksBack, accessToken]);
+        if (!chartLoading && accessToken !== undefined && accessToken !== '')    showGraph();
+    }, [weeksBack, metric, accessToken]);
+
+    const handleMetricChange = (event) => {
+        setMetric(event.target.value);
+    }
+
+    const getMetricName = (metric) => {
+        return metric==='steps' ? "Step count" :
+            metric==='calories' ? "Total calories" :
+            metric==='restingHeartRate' ? "Resting heart rate (bpm)" :
+            metric==='elevation' ? "Total daily elevation (ft)" :
+            metric==='veryActiveMinutes' ? "Daily active minutes" :
+            "???";
+    }
 
     const showGraph = async () => {
         setChartLoading(true);
@@ -44,9 +59,9 @@ const FitbitStepGraph = ({ accessToken, metric }) => {
                     let dataEntry;
                     metric==='steps' ? dataEntry = activitySummary.summary.steps :
                     metric==='calories' ? dataEntry = activitySummary.summary.caloriesOut :
-                    metric==='resting heart rate' ? dataEntry = activitySummary.summary.restingHeartRate :
+                    metric==='restingHeartRate' ? dataEntry = activitySummary.summary.restingHeartRate :
                     metric==='elevation' ? dataEntry = activitySummary.summary.elevation :
-                    metric==='very active minutes' ? dataEntry = activitySummary.summary.veryActiveMinutes :
+                    metric==='veryActiveMinutes' ? dataEntry = activitySummary.summary.veryActiveMinutes :
                     dataEntry = activitySummary.summary.steps;
 
 
@@ -97,8 +112,15 @@ const FitbitStepGraph = ({ accessToken, metric }) => {
 
     return (
         <div>
+            <select onChange={handleMetricChange}>
+                <option value='steps'>Steps</option>
+                <option value='calories'>Calories</option>
+                <option value='restingHeartRate'>Resting heart rate</option>
+                <option value='veryActiveMinutes'>Very active minutes</option>
+                <option value='elevation'>Elevation</option>
+            </select>
             {chartLoading && <h3>Loading...</h3>}
-            {accessToken!==undefined && chartData[0] && 
+            {chartData[0] && 
             <div>
                 <button className={'button'} onClick={() => {
                     setWeeksBack(weeksBack + 1);
@@ -122,7 +144,7 @@ const FitbitStepGraph = ({ accessToken, metric }) => {
                 >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" label={{ value: 'Date', position: 'insideBottom', offset: -20}}/>
-                <YAxis label={{ value: 'Step Count', angle: -90, position: 'insideLeft', offset: -30, style: { textAnchor: 'middle' } }} />
+                <YAxis label={{ value: getMetricName(metric), angle: -90, position: 'insideLeft', offset: -30, style: { textAnchor: 'middle' } }} />
                 <Tooltip />
                 <Legend verticalAlign="top" align="right"/>  
                 <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }}/>

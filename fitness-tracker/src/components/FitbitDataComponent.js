@@ -116,7 +116,7 @@ const FitbitDataComponent = () => {
             <div className="right-panel">
             {/* Content for the right panel */}
                 <hr></hr>
-                <FitbitStepGraph accessToken={accessToken} metric={'steps'}/>
+                <FitbitStepGraph accessToken={accessToken}/>
             </div>
         </div>
     )
