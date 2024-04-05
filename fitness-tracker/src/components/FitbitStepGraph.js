@@ -4,18 +4,22 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 const FitbitStepGraph = ({ accessToken }) => {
 
     const [metric, setMetric] = useState('steps');
+    const [span, setSpan] = useState(7);
+    const [intervalsBack, setintervalsBack] = useState(0);
 
     const [chartData, setChartData] = useState([]);
-    const [chartLoading, setChartLoading] = useState(true);
-    
-    const [weeksBack, setWeeksBack] = useState(0);
+    const [chartLoading, setChartLoading] = useState(false);
 
     useEffect( () => {
         if (!chartLoading && accessToken !== undefined && accessToken !== '')    showGraph();
-    }, [weeksBack, metric, accessToken]);
+    }, [intervalsBack, metric, span, accessToken]);
 
     const handleMetricChange = (event) => {
         setMetric(event.target.value);
+    }
+    const handleSpanChange = (event) => {
+        console.log(event.target.value);
+        setSpan(event.target.value==='week' ? 7 : 30);
     }
 
     const getMetricName = (metric) => {
@@ -28,6 +32,7 @@ const FitbitStepGraph = ({ accessToken }) => {
     }
 
     const showGraph = async () => {
+        console.log("showGraph");
         setChartLoading(true);
 
         try {
@@ -36,8 +41,8 @@ const FitbitStepGraph = ({ accessToken }) => {
             const today = new Date();
 
             // Iterate through the last seven days
-            const weekAdjustment = 7 * weeksBack;
-            for (let i = weekAdjustment; i < weekAdjustment + 7; i++) {
+            const weekAdjustment = span * intervalsBack;
+            for (let i = weekAdjustment; i < weekAdjustment + span; i++) {
                 let date = new Date(today); // Create a new date object for each iteration
                 date.setDate(today.getDate() - i);
                 const year = date.getFullYear();
@@ -67,7 +72,7 @@ const FitbitStepGraph = ({ accessToken }) => {
 
                     stepData.unshift(dataEntry);
                 } else {
-                    console.log(`Activity summary for date ${date} is invalid or missing.`);
+                    console.error(`Activity summary for date ${date} is invalid or missing.`);
                 }
             }
     
@@ -82,7 +87,7 @@ const FitbitStepGraph = ({ accessToken }) => {
             setChartData(chartData);
             setChartLoading(false);
         } catch (error) {
-            console.log('Error fetching activity data:', error);
+            console.error('Error fetching activity data:', error);
         }
     };
 
@@ -119,19 +124,23 @@ const FitbitStepGraph = ({ accessToken }) => {
                 <option value='veryActiveMinutes'>Very active minutes</option>
                 <option value='elevation'>Elevation</option>
             </select>
+            <select onChange={handleSpanChange}>
+                <option value='week'>Week</option>
+                <option value='month'>Month</option>
+            </select>
             {chartLoading && <h3>Loading...</h3>}
             {chartData[0] && 
             <div>
                 <button className={'button'} onClick={() => {
-                    setWeeksBack(weeksBack + 1);
-                }}>&lt; Prev Week</button> <span>      </span>
-                <button className={'button'} disabled={weeksBack === 0} onClick={() => {
-                    if (weeksBack > 0)  {
-                        setWeeksBack(weeksBack - 1);
+                    setintervalsBack(intervalsBack + 1);
+                }}>&lt; Prev</button> <span>      </span>
+                <button className={'button'} disabled={intervalsBack === 0} onClick={() => {
+                    if (intervalsBack > 0)  {
+                        setintervalsBack(intervalsBack - 1);
                     }
-                }}>Next Week &gt;</button>
+                }}>Next &gt;</button>
             </div>}
-            {chartData[0] && <LineChart
+            {accessToken!==undefined && chartData[0] && <LineChart
                 width={500}
                 height={300}
                 data={chartData}
@@ -145,7 +154,7 @@ const FitbitStepGraph = ({ accessToken }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" label={{ value: 'Date', position: 'insideBottom', offset: -20}}/>
                 <YAxis label={{ value: getMetricName(metric), angle: -90, position: 'insideLeft', offset: -30, style: { textAnchor: 'middle' } }} />
-                <Tooltip />
+                <Tooltip labelFormatter={(value) => [getMetricName(metric), value]}/>
                 <Legend verticalAlign="top" align="right"/>  
                 <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }}/>
             </LineChart>}
