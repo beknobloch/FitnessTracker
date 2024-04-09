@@ -21,7 +21,7 @@ function Signup() {
             const user = userCredential.user;
             await addUser(user.uid); 
             // Redirect based on the isCoach flag
-            navigate(isCoach ? '/homecoach' : '/home');
+            navigate(isCoach ? '/coach-home' : '/home');
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to create an account. Please check your inputs and try again.");
