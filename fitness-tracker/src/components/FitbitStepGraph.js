@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'r
 const FitbitStepGraph = ({ accessToken }) => {
 
     const [metric, setMetric] = useState('steps');
+
     const [span, setSpan] = useState(7);
     const [intervalsBack, setintervalsBack] = useState(0);
 
@@ -20,8 +21,9 @@ const FitbitStepGraph = ({ accessToken }) => {
         setMetric(event.target.value);
     }
     const handleSpanChange = (event) => {
-        console.log(event.target.value);
-        setSpan(event.target.value==='week' ? 7 : 30);
+        setSpan(event.target.value==='week' ? 7 :
+                event.target.value==='month' ? 30 :
+                365);
     }
 
     const getMetricName = (metric) => {
@@ -33,19 +35,30 @@ const FitbitStepGraph = ({ accessToken }) => {
             "???";
     }
 
+    const fetchDataAndUpdateCachedData = async(date) => {
+        
+        let tempData = cachedData;
+        const activitySummary = await getActivitySummary(accessToken, metric, date);
+        for (const valuePair of activitySummary[`activities-${metric}`]) {
+            if (!tempData[metric])    tempData[metric] = {};
+            tempData[metric][valuePair[`dateTime`]] = valuePair[`value`];
+        }
+        setCachedData(tempData);
+
+    }
+
     const showGraph = async () => {
-        console.log("showGraph");
         setChartLoading(true);
 
         try {
-            // Initialize an array to store the dates
+            
             let dates = [];
             const today = new Date();
 
             // Iterate through the last seven days
             const weekAdjustment = span * intervalsBack;
             for (let i = weekAdjustment; i < weekAdjustment + span; i++) {
-                let date = new Date(today); // Create a new date object for each iteration
+                let date = new Date(today);
                 date.setDate(today.getDate() - i);
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -54,44 +67,24 @@ const FitbitStepGraph = ({ accessToken }) => {
                 dates.push(formattedDate);
             }
     
-            let stepData = []; // Create an array to store step data
+            let stepData = [];
     
-            // Use for...of loop to ensure await inside loop waits for each iteration
             for (const date of dates) {
                 
-                let activitySummary = null;
-                if (cachedData.hasOwnProperty(date)) {
-                    activitySummary = cachedData[date];
-                } else {
-                    activitySummary = await getActivitySummary(accessToken, date);
-                    setCachedData(prevState => ({
-                        ...prevState,
-                        [date]: activitySummary
-                    }));
+                // If cachedData does not have the right metric or the right date for that metric, request a year's worth of data.
+                if (!(cachedData.hasOwnProperty(metric) && cachedData[metric].hasOwnProperty(date))) {
+                    await fetchDataAndUpdateCachedData(date);
                 }
 
-                if (activitySummary && activitySummary.summary) {
-
-                    let dataEntry;
-                    metric==='steps' ? dataEntry = activitySummary.summary.steps :
-                    metric==='calories' ? dataEntry = activitySummary.summary.caloriesOut :
-                    metric==='restingHeartRate' ? dataEntry = activitySummary.summary.restingHeartRate :
-                    metric==='elevation' ? dataEntry = activitySummary.summary.elevation :
-                    metric==='veryActiveMinutes' ? dataEntry = activitySummary.summary.veryActiveMinutes :
-                    dataEntry = activitySummary.summary.steps;
-
-
-                    stepData.unshift(dataEntry);
-                } else {
-                    console.error(`Activity summary for date ${date} is invalid or missing.`);
-                }
+                const dataEntry = cachedData[metric][date];
+                stepData.unshift(dataEntry);      
             }
     
             let chartData = [];
             stepData.forEach((stepCount, i) => {
                 chartData.push({
                     name: dates[dates.length - 1 - i],
-                    steps: stepCount
+                    steps: parseInt(stepCount)
                 });
             });
     
@@ -114,8 +107,8 @@ const FitbitStepGraph = ({ accessToken }) => {
         }
     }
 
-    const getActivitySummary = async (accessToken, date) => {
-        const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/date/${date}.json`;
+    const getActivitySummary = async (accessToken, activity, date) => {
+        const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/${activity}/date/${date}/1y.json`;
         const timeSeriesHeaders = {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -138,6 +131,7 @@ const FitbitStepGraph = ({ accessToken }) => {
             <select onChange={handleSpanChange}>
                 <option value='week'>Week</option>
                 <option value='month'>Month</option>
+                <option value='year'>Year</option>
             </select>
             {chartLoading && <h3>Loading...</h3>}
             {chartData[0] && 
@@ -151,7 +145,8 @@ const FitbitStepGraph = ({ accessToken }) => {
                     }
                 }}>Next &gt;</button>
             </div>}
-            {accessToken!==undefined && chartData[0] && <LineChart
+            {accessToken!==undefined && chartData[0] &&
+            <LineChart
                 width={500}
                 height={300}
                 data={chartData}
