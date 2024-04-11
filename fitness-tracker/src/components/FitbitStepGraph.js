@@ -10,6 +10,8 @@ const FitbitStepGraph = ({ accessToken }) => {
     const [chartData, setChartData] = useState([]);
     const [chartLoading, setChartLoading] = useState(false);
 
+    const [cachedData, setCachedData] = useState({ });
+
     useEffect( () => {
         if (!chartLoading && accessToken !== undefined && accessToken !== '')    showGraph();
     }, [intervalsBack, metric, span, accessToken]);
@@ -56,11 +58,20 @@ const FitbitStepGraph = ({ accessToken }) => {
     
             // Use for...of loop to ensure await inside loop waits for each iteration
             for (const date of dates) {
-                const activitySummary = await getActivitySummary(accessToken, date);
+                
+                let activitySummary = null;
+                if (cachedData.hasOwnProperty(date)) {
+                    activitySummary = cachedData[date];
+                } else {
+                    activitySummary = await getActivitySummary(accessToken, date);
+                    setCachedData(prevState => ({
+                        ...prevState,
+                        [date]: activitySummary
+                    }));
+                }
+
                 if (activitySummary && activitySummary.summary) {
 
-
-                    // USE COMPONENT PARAMETER to add relevant metric to the graph data
                     let dataEntry;
                     metric==='steps' ? dataEntry = activitySummary.summary.steps :
                     metric==='calories' ? dataEntry = activitySummary.summary.caloriesOut :
