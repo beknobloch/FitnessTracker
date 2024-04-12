@@ -6,7 +6,7 @@ import AuthStatus from '../components/AuthStatus';
 function Start() {
   const navigate = useNavigate(); // Use useNavigate hook for navigation
   const [showExampleQuery, setShowExampleQuery] = useState(false); // State to control the visibility of ExampleQuery
-
+  
   return (
     <div className='startPage'>
       <h2>Welcome to our Fitness Tracker!</h2>

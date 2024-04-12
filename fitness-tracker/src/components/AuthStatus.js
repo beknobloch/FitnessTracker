@@ -26,10 +26,12 @@ function AuthStatus({ displayLogout }){
     const logout = async () => {
         try {
             await signOut(auth)
+            handleClick('/start')
         } catch (error) {
             console.log(error)
         } 
     }
+    
     return(
 
         <div className="authButtonContainer">
@@ -39,15 +41,15 @@ function AuthStatus({ displayLogout }){
                         {displayLogout ? (
                             <button className={'button-logout'} onClick={logout}>Log out</button>
                         ) : (
-                            <button className={'button'} onClick={() => handleClick('home')}>Go check out your Fitbit
+                            <button className={'button'} onClick={() => handleClick('/home')}>Go check out your Fitbit
                                 data!</button>
                         )}
                     </>
 
                 ) : (
                     <div>
-                        <button className={'button'} onClick={() => handleClick('login')}>Log in</button>
-                        <button className={'button'} onClick={() => handleClick('signup')}>Sign up</button>
+                        <button className={'button'} onClick={() => handleClick('/login')}>Log in</button>
+                        <button className={'button'} onClick={() => handleClick('/signup')}>Sign up</button>
                     </div>
                 )}
             
