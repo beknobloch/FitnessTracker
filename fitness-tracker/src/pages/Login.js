@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../config/firebase';
 import { useNavigate } from "react-router-dom";
-
+import Query from "../components/Query";
 
 function Login(props){
     const [email, setEmail] = useState("");
@@ -15,7 +15,13 @@ function Login(props){
             await signInWithEmailAndPassword(auth, email, password)
             setEmail("");
             setPassword("");
-            navigate('/home');
+
+            if(await Query.getValue(auth?.currentUser?.uid, 'isCoach', true)){
+                navigate('/coach')
+            }else{
+                navigate('/home')
+            }
+
         } catch (error) {
             console.log(error);
             alert("Incorrect username or password");

@@ -10,6 +10,8 @@ function Signup() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isCoach, setIsCoach] = useState(false)
+
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const userCollectionRef = collection(db, "users");
@@ -18,7 +20,11 @@ function Signup() {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             await addUser();
-            navigate('/home');
+            if(isCoach){
+                navigate('/coach')
+            }else{
+                navigate('/home')
+            }
         } catch (error) {
             console.error(error);
             setErrorMessage("Failed to create an account. Please check your inputs and try again.");
@@ -31,6 +37,7 @@ function Signup() {
                 name: name, 
                 uid: auth.currentUser.uid, 
                 birthday: birthday,
+                isCoach: isCoach
             });
         } catch (error) {
             console.error(error);
@@ -65,6 +72,15 @@ function Signup() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            
+            <label htmlFor="isCoach" style={{ fontSize: "14px" }}>Are you a health coach?  </label>
+            <input 
+                type="checkbox"
+                id='isCoach'
+                value={isCoach}
+                onChange={(e) => setIsCoach(!isCoach)}
             />
             <br />
             <button onClick={createAccount}>Create Account</button>
