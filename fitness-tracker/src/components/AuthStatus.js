@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from '../config/firebase'
 import { signOut } from 'firebase/auth'
+import config from '../config/config';
 
 //if the user is not logged in, displays log in and sign up buttons. If logged in, displays something like "signed in as x"
 function AuthStatus({ displayLogout }){
     let navigate = useNavigate(); 
 
     const [user, setUser] = useState(auth?.currentUser?.email)
+    const clientId = config.client_id;
+    const clientSecret = config.client_secret;
 
     //listens for if user signs in/out
     useEffect(() => {
@@ -17,6 +20,7 @@ function AuthStatus({ displayLogout }){
 
         return () => unsubscribe();
     }, []);
+
     //navigates to page
     const handleClick = (pageName) =>{
         navigate(pageName)
@@ -26,10 +30,24 @@ function AuthStatus({ displayLogout }){
     const logout = async () => {
         try {
             await signOut(auth)
+            //await revokeAccessToken(sessionStorage.getItem('token')) // UNCOMMENT BEFORE DEPLOYING!
             handleClick('/start')
+            sessionStorage.clear()
         } catch (error) {
             console.log(error)
         } 
+    }
+    
+    // signs out of fitbit account
+    async function revokeAccessToken(accessToken) {
+        return await fetch('https://api.fitbit.com/oauth2/revoke', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret),
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'token=' + accessToken
+        });
     }
     
     return(

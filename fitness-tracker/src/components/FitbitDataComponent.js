@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import FitbitDailyData from './FitbitDailyData';
 import FitbitStepGraph from './FitbitStepGraph';
+import config from '../config/config';
 
 const FitbitDataComponent = () => {
-    
     const [accessToken, setAccessToken] = useState('');
     
     const [profile, setProfile] = useState('');
 
     /************ Change for your app *************/
-    const clientId = '23RRWK';
-    const clientSecret = 'd7830394ff0e361521dba4551e48b594';
+    const clientId = config.client_id;
+    const clientSecret = config.client_secret;
     const redirectUri = 'http://localhost:3000/home'; // the redirectURL in FitBit app
 
     /*  ------------------------------ Authorization ------------------------------  */
@@ -63,6 +63,9 @@ const FitbitDataComponent = () => {
                 const accessTokenLocal = data.access_token;
 
                 setAccessToken(accessTokenLocal);
+                
+                // temporarily stores accessToken
+                sessionStorage.setItem("token", accessTokenLocal);
 
                 // Now you can use the access token to make requests to the Fitbit API
                 functionsRan(accessTokenLocal);
