@@ -30,8 +30,9 @@ const FitbitStepGraph = ({ accessToken }) => {
         return metric==='steps' ? "Step count" :
             metric==='calories' ? "Total calories" :
             metric==='restingHeartRate' ? "Resting heart rate (bpm)" :
+            metric==='distance' ? "Distance travelled (miles)" :
             metric==='elevation' ? "Total daily elevation (ft)" :
-            metric==='veryActiveMinutes' ? "Daily active minutes" :
+            metric==='minutesVeryActive' ? "Daily active minutes" :
             "???";
     }
 
@@ -125,7 +126,8 @@ const FitbitStepGraph = ({ accessToken }) => {
                 <option value='steps'>Steps</option>
                 <option value='calories'>Calories</option>
                 <option value='restingHeartRate'>Resting heart rate</option>
-                <option value='veryActiveMinutes'>Very active minutes</option>
+                <option value='minutesVeryActive'>Very active minutes</option>
+                <option value='distance'>Distance travelled</option>
                 <option value='elevation'>Elevation</option>
             </select>
             <select onChange={handleSpanChange}>
@@ -160,7 +162,7 @@ const FitbitStepGraph = ({ accessToken }) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" label={{ value: 'Date', position: 'insideBottom', offset: -20}}/>
                 <YAxis label={{ value: getMetricName(metric), angle: -90, position: 'insideLeft', offset: -30, style: { textAnchor: 'middle' } }} />
-                <Tooltip labelFormatter={(value) => [getMetricName(metric), value]}/>
+                <Tooltip formatter={(value) => [value, getMetricName(metric)]}/>
                 <Legend verticalAlign="top" align="right"/>  
                 <Line type="monotone" dataKey="steps" stroke="#8884d8" activeDot={{ r: 8 }}/>
             </LineChart>}
