@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth } from '../config/firebase';
-import FitbitDataComponent from '../components/FitbitDataComponent.js';
+import FitbitDataComponent from '../components/fitbit/FitbitDataComponent.js';
 
 function Coach() {
     const [loggedIn, setLoggedIn] = useState(false);

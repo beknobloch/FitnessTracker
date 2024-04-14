@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import FitbitDailyData from './FitbitDailyData';
 import FitbitStepGraph from './FitbitStepGraph';
-import config from '../config/config';
+import config from '../../config/config';
+import FitbitGoalData from './FitbitGoalData';
 
 const FitbitDataComponent = ({ redirectTo }) => {
     const [accessToken, setAccessToken] = useState('');
@@ -127,6 +128,7 @@ const FitbitDataComponent = ({ redirectTo }) => {
         ):(
             <div>
                 <p>Coach</p>
+                <FitbitGoalData accessToken={accessToken}/>
             </div>
         )}
  
