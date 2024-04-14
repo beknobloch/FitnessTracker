@@ -10,7 +10,7 @@ function AuthStatus({ displayLogout }){
     let navigate = useNavigate(); 
 
     const [user, setUser] = useState(auth?.currentUser?.email)
-    const [isCoach, setIsCoach] = useState(false)
+    const [isCoach, setIsCoach] = useState()
     const clientId = config.client_id;
     const clientSecret = config.client_secret;
 
@@ -66,7 +66,14 @@ function AuthStatus({ displayLogout }){
                                 {isCoach ? (
                                     <button className={'button'} onClick={() => handleClick('/coach')}>Go set some Fitbit goals! </button>
                                 ):(
-                                    <button className={'button'} onClick={() => handleClick('/home')}>Go check out your Fitbit data! </button>
+                                    <>
+                                        {typeof isCoach === 'undefined' ? (
+                                            <p>Loading...</p>
+                                        ):(
+                                            <button className={'button'} onClick={() => handleClick('/home')}>Go check out your Fitbit data! </button>
+                                        )}
+                                    </>
+                                    
                                 )}
                             </>
                             
