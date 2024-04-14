@@ -3,10 +3,11 @@ import FitbitDailyData from './FitbitDailyData';
 import FitbitStepGraph from './FitbitStepGraph';
 import config from '../../config/config';
 import FitbitGoalData from './FitbitGoalData';
+import { useNavigate } from 'react-router-dom';
 
 const FitbitDataComponent = ({ redirectTo }) => {
     const [accessToken, setAccessToken] = useState('');
-    
+    let navigate = useNavigate(); 
     const [profile, setProfile] = useState('');
 
     /************ Change for your app *************/
@@ -72,7 +73,12 @@ const FitbitDataComponent = ({ redirectTo }) => {
                 functionsRan(accessTokenLocal);
             }
             else {
-                console.error('Error exchanging authorization code for access token');
+                if(accessToken){
+                    console.error('Error exchanging authorization code for access token');
+                }else{
+                    navigate(`/${redirectTo}`)
+                }
+                
             }
         } catch (error) {
             console.error('Error during token exchange:', error);

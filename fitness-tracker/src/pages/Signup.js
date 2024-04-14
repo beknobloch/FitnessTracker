@@ -55,20 +55,26 @@ function Signup() {
                 onChange={(e) => setBirthday(e.target.value)}
             />
             <br />
+            <label htmlFor="name" style={{ fontSize: "14px" }}>Name:  </label>
             <input 
-                placeholder="Name"
+                placeholder="Your name"
+                id='name'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
             <br />
+            <label htmlFor="email" style={{ fontSize: "14px" }}>Email:  </label>
             <input 
-                placeholder="Email"
+                placeholder="Your email"
+                id='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
             <br />
+            <label htmlFor="password" style={{ fontSize: "14px" }}>Password:  </label>
             <input 
-                placeholder="Password"
+                placeholder="Your password"
+                id='password'
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

@@ -18,7 +18,7 @@ function AuthStatus({ displayLogout }){
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             setUser(user);
-            setIsCoach(await Query.getValue(auth?.currentUser?.uid, 'isCoach', true))
+            setIsCoach(await Query.getValue(auth?.currentUser?.uid, 'isCoach'))
         });
 
         return () => unsubscribe();
