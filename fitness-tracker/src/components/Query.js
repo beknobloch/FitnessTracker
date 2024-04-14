@@ -1,7 +1,7 @@
 import { db } from "../config/firebase"
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
-// given a user id, field, and expectedValue, returns the field's value on the database
+// given a user id and field, returns the field's value on the database
 const getValue = async (uid, field) => {
     try{
         const q = query(collection(db, "users"), where("uid", "==", uid));
