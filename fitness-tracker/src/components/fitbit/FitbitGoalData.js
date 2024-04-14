@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 
 const FitbitGoalData = ({ accessToken }) => {
 
+    // stores the original goals from the most recent fetch
     const [goals, setGoals] = useState()
     const [displayGoals, setDisplayGoals] = useState(false)
+
+    // initially this will match the original goals but when the user changes a goal's value, this is the object that's updated
     const [newGoals, setNewGoals] = useState()
     /*  ------------------------------ API Calls ------------------------------  */
 
