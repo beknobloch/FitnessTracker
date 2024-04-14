@@ -17,10 +17,10 @@ function Home() {
         <div>
             {loggedIn ? (
                 <div>
-                    <FitbitDataComponent />
+                    <FitbitDataComponent redirectTo={'home'}/>
                 </div>
             ) : (
-              <p>Not logged in</p>
+                <p>Not logged in</p>
             )}
             
         </div>

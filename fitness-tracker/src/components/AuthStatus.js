@@ -3,19 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { auth } from '../config/firebase'
 import { signOut } from 'firebase/auth'
 import config from '../config/config';
+import Query from "../components/Query";
 
 //if the user is not logged in, displays log in and sign up buttons. If logged in, displays something like "signed in as x"
 function AuthStatus({ displayLogout }){
     let navigate = useNavigate(); 
 
     const [user, setUser] = useState(auth?.currentUser?.email)
+    const [isCoach, setIsCoach] = useState(false)
     const clientId = config.client_id;
     const clientSecret = config.client_secret;
 
     //listens for if user signs in/out
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
+        const unsubscribe = auth.onAuthStateChanged(async (user) => {
             setUser(user);
+            setIsCoach(await Query.getValue(auth?.currentUser?.uid, 'isCoach', true))
         });
 
         return () => unsubscribe();
@@ -59,8 +62,14 @@ function AuthStatus({ displayLogout }){
                         {displayLogout ? (
                             <button className={'button-logout'} onClick={logout}>Log out</button>
                         ) : (
-                            <button className={'button'} onClick={() => handleClick('/home')}>Go check out your Fitbit
-                                data!</button>
+                            <>
+                                {isCoach ? (
+                                    <button className={'button'} onClick={() => handleClick('/coach')}>Go set some Fitbit goals! </button>
+                                ):(
+                                    <button className={'button'} onClick={() => handleClick('/home')}>Go check out your Fitbit data! </button>
+                                )}
+                            </>
+                            
                         )}
                     </>
 

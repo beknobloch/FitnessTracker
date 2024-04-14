@@ -1,5 +1,5 @@
 let config = {
-    client_id: '23RRWK',
-    client_secret: 'd7830394ff0e361521dba4551e48b594'
+    client_id: '23S2ZN',
+    client_secret: '3b3980c59696e014ceae84b4f73fd0d5'
 }
 export default config

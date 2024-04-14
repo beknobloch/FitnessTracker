@@ -3,7 +3,7 @@ import FitbitDailyData from './FitbitDailyData';
 import FitbitStepGraph from './FitbitStepGraph';
 import config from '../config/config';
 
-const FitbitDataComponent = () => {
+const FitbitDataComponent = ({ redirectTo }) => {
     const [accessToken, setAccessToken] = useState('');
     
     const [profile, setProfile] = useState('');
@@ -11,7 +11,7 @@ const FitbitDataComponent = () => {
     /************ Change for your app *************/
     const clientId = config.client_id;
     const clientSecret = config.client_secret;
-    const redirectUri = 'http://localhost:3000/home'; // the redirectURL in FitBit app
+    const redirectUri = `http://localhost:3000/${redirectTo}`; // the redirectURL in FitBit app
 
     /*  ------------------------------ Authorization ------------------------------  */
 
@@ -110,18 +110,27 @@ const FitbitDataComponent = () => {
 
 
     return (
-        <div className={"container"}>
-            <div className="left-panel">
-                {/* Content for the left panel */}
-                <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}</h2>
-                <FitbitDailyData accessToken={accessToken}/>
+        <>
+        {redirectTo === 'home' ? (
+            <div className={"container"}>
+                <div className="left-panel">
+                   {/* Content for the left panel */}
+                   <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}</h2>
+                   <FitbitDailyData accessToken={accessToken}/>
+                </div>
+                <div className="right-panel">
+                {/* Content for the right panel */}
+                   <hr></hr>
+                   <FitbitStepGraph accessToken={accessToken}/>
+                </div>
             </div>
-            <div className="right-panel">
-            {/* Content for the right panel */}
-                <hr></hr>
-                <FitbitStepGraph accessToken={accessToken}/>
+        ):(
+            <div>
+                <p>Coach</p>
             </div>
-        </div>
+        )}
+ 
+        </>
     )
 };
 
