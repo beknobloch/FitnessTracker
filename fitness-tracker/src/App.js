@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Home from './pages/Home'
 import Coach from './pages/Coach';
+import SelectCoach from './pages/SelectCoach'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
               <Route path="/signup" element={<Signup/>}/>
               <Route path="/login" element={<Login />}/>
               <Route path="/coach" element={<Coach />}/>
+              <Route path="/select-coach" element={<SelectCoach />} />
             </Routes>
           </Router>
         </header>

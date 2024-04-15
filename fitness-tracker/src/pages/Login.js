@@ -44,7 +44,7 @@ function Login(props){
                 onChange={(e) => setPassword(e.target.value)}
             />
             <br />
-            <button onClick={logIn}>Log in</button>
+            <button className={'button'} onClick={logIn}>Log in</button>
         </div>
     )
 }

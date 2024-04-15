@@ -1,16 +1,15 @@
-
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from '../config/firebase';
 import { useNavigate } from "react-router-dom";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
 
 function Signup() {
     const [birthday, setBirthday] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [isCoach, setIsCoach] = useState(false)
+    const [isCoach, setIsCoach] = useState(false);
 
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
@@ -20,10 +19,10 @@ function Signup() {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             await addUser();
-            if(isCoach){
-                navigate('/coach')
-            }else{
-                navigate('/home')
+            if (isCoach) {
+                navigate('/coach');
+            } else {
+                navigate('/select-coach');
             }
         } catch (error) {
             console.error(error);
@@ -33,12 +32,14 @@ function Signup() {
 
     const addUser = async () => {
         try {
-            await addDoc(userCollectionRef, {
-                name: name, 
-                uid: auth.currentUser.uid, 
+            const docRef = await addDoc(userCollectionRef, {
+                name: name,
+                uid: auth.currentUser.uid,
                 birthday: birthday,
-                isCoach: isCoach
+                isCoach: isCoach,
+                coachId: isCoach ? "" : null // Set coachId to null if user is not a coach
             });
+            console.log("Document written with ID: ", docRef.id);
         } catch (error) {
             console.error(error);
         }
@@ -48,7 +49,7 @@ function Signup() {
         <div>
             <h1>Sign Up</h1>
             <label htmlFor="birthday" style={{ fontSize: "14px" }}>Date of birth:  </label>
-            <input 
+            <input
                 id="birthday"
                 type="date"
                 value={birthday}
@@ -56,7 +57,7 @@ function Signup() {
             />
             <br />
             <label htmlFor="name" style={{ fontSize: "14px" }}>Name:  </label>
-            <input 
+            <input
                 placeholder="Your name"
                 id='name'
                 value={name}
@@ -64,7 +65,7 @@ function Signup() {
             />
             <br />
             <label htmlFor="email" style={{ fontSize: "14px" }}>Email:  </label>
-            <input 
+            <input
                 placeholder="Your email"
                 id='email'
                 value={email}
@@ -72,7 +73,7 @@ function Signup() {
             />
             <br />
             <label htmlFor="password" style={{ fontSize: "14px" }}>Password:  </label>
-            <input 
+            <input
                 placeholder="Your password"
                 id='password'
                 type="password"
@@ -80,16 +81,16 @@ function Signup() {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <br />
-            
+
             <label htmlFor="isCoach" style={{ fontSize: "14px" }}>Are you a health coach?  </label>
-            <input 
+            <input
                 type="checkbox"
                 id='isCoach'
-                value={isCoach}
-                onChange={(e) => setIsCoach(!isCoach)}
+                checked={isCoach}
+                onChange={(e) => setIsCoach(e.target.checked)}
             />
             <br />
-            <button onClick={createAccount}>Create Account</button>
+            <button className={'button'} onClick={createAccount}>Create Account</button>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>
     );
