@@ -1,13 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { auth, db } from "../../config/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const FitbitGoalData = ({ accessToken }) => {
 
     // stores the original goals from the most recent fetch
-    const [goals, setGoals] = useState()
-    const [displayGoals, setDisplayGoals] = useState(false)
+    const [goals, setGoals] = useState({});
+    const [displayGoals, setDisplayGoals] = useState(false);
 
     // initially this will match the original goals but when the user changes a goal's value, this is the object that's updated
-    const [newGoals, setNewGoals] = useState()
+    const [newGoals, setNewGoals] = useState();
+
+    const [users, setUsers] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState("");
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                // Fetch users with matching CoachId
+                const userID = auth?.currentUser?.uid;
+                // Logging user ID to display the coaches ID (For debugging)
+                console.log("Current user UID:", userID);
+                const q = query(collection(db, "users"), where("coachId", "==", userID));
+                const querySnapshot = await getDocs(q);
+                const usersData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setUsers(usersData);
+                console.log("Fetched users:", usersData); // Log the fetched users
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const handleUserSelect = (userId) => {
+        setSelectedUserId(userId);
+    };
+
     /*  ------------------------------ API Calls ------------------------------  */
 
     const APIRequest = async (endpoint, requestHeaders) => {
@@ -19,7 +52,7 @@ const FitbitGoalData = ({ accessToken }) => {
         } else {
             console.error('Error fetching Fitbit data');
         }
-    }
+    };
 
     // pulls list of goals and their values
     const getGoals = async (accessToken) => {
@@ -40,7 +73,7 @@ const FitbitGoalData = ({ accessToken }) => {
     // pushes new goal values, only pushes changed goals
     const sendGoals = async (accessToken) => {
         // checks if any goal has been changed
-        if(newGoals !== goals){
+        if (newGoals !== goals) {
 
             // iterates through each type of goal in newGoals (entry = a type of goal)
             for (const [key, value] of Object.entries(newGoals)){
@@ -57,41 +90,54 @@ const FitbitGoalData = ({ accessToken }) => {
                     };
                     await APIRequest(timeSeriesEndpoint, timeSeriesHeaders)
                 }
-            };
+            }
             // displays the updated goal
             await getGoals(accessToken) 
         }else{
             alert('No goals were changed')
         }
     };
-    /*  ------------------------------ Other Functions ------------------------------  */
-    
+
     return (
         <div>
-            <button onClick={() => getGoals(accessToken)}>get goals</button>
+            <button className={'button'} onClick={() => getGoals(accessToken)}>Get Goals</button>
             {displayGoals && (
                 <>
-                    {Object.entries(goals).map(([key, value]) => (
+                    {Object.entries(goals).map(([key]) => (
                         <div key={key}>
-                            <label htmlFor={key} style={{ fontSize: "14px" }}>{key}:  </label>
-                            <input 
+                            <label htmlFor={key} style={{fontSize: "14px"}}>{key}: </label>
+                            <input
                                 placeholder={key}
                                 type='number'
                                 min="1"
                                 value={newGoals[key]}
                                 onChange={(e) => setNewGoals(prevState => ({
                                     ...prevState,
-                                    [key] : e.target.value
+                                    [key]: e.target.value
                                 }))}
                             />
                         </div>
                     ))}
 
-                    <button onClick={() => sendGoals(accessToken)}>Send new goals</button>
+                    <label htmlFor="userSelect" style={{fontSize: "14px"}}>Select a user: </label>
+                    <select
+                        id="userSelect"
+                        onChange={(e) => handleUserSelect(e.target.value)}
+                        value={selectedUserId}
+                    >
+                        <option value="">Select a user</option>
+                        {users.map(user => (
+                            <option key={user.id} value={user.uid}>{user.name}</option>
+                        ))}
+                    </select>
+
+                    <br/>
+
+                    <button className={'button'} onClick={() => sendGoals(accessToken)}>Send new goals</button>
                 </>
             )}
         </div>
-    )
+    );
 };
 
 export default FitbitGoalData;
