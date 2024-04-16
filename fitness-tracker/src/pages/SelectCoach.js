@@ -17,6 +17,7 @@ function SelectCoach({ isCoach }) {
                 const querySnapshot = await getDocs(q);
                 const coachesData = querySnapshot.docs.map(doc => ({
                     id: doc.id,
+                    uid: doc.data().uid, // Assuming UID is stored in a field named 'uid'
                     ...doc.data()
                 }));
                 setCoaches(coachesData);
@@ -33,12 +34,13 @@ function SelectCoach({ isCoach }) {
 
     const handleSubmit = async () => {
         try {
-            const user = auth?.currentUser?.uid;
-            console.log("Current user UID:", user); // Log the UID
+            const userUid = auth?.currentUser?.uid;
+            console.log("Current user UID:", userUid); // Log the UID
+            console.log("Selected Coach ID:", selectedCoachId); // Log the selected coach ID
 
             // Get the user document by UID
             const usersCollectionRef = collection(db, "users");
-            const querySnapshot = await getDocs(query(usersCollectionRef, where("uid", "==", user)));
+            const querySnapshot = await getDocs(query(usersCollectionRef, where("uid", "==", userUid)));
 
             if (!querySnapshot.empty) {
                 // There should be only one document with the given UID
@@ -46,14 +48,13 @@ function SelectCoach({ isCoach }) {
                 const userSnapshot = await getDoc(userDocRef);
 
                 if (userSnapshot.exists()) {
+                    // Update the document with selectedCoachId
                     await updateDoc(userDocRef, { coachId: selectedCoachId });
                     navigate('/home');
                 } else {
-                    // Document does not exist, handle this case (e.g., create a new document)
                     console.error("User document does not exist");
                 }
             } else {
-                // Document with given UID not found
                 console.error("User document not found");
             }
         } catch (error) {
@@ -70,7 +71,7 @@ function SelectCoach({ isCoach }) {
             >
                 <option value="">Select a coach</option>
                 {coaches.map(coach => (
-                    <option key={coach.id} value={coach.id}>{coach.name}</option>
+                    <option key={coach.id} value={coach.uid}>{coach.name}</option>
                 ))}
             </select>
             <button className={'button'} onClick={handleSubmit}>Submit</button>
