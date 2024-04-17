@@ -10,6 +10,9 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isCoach, setIsCoach] = useState(false);
+    const [heightFeet, setHeightFeet] = useState(0);
+    const [heightInches, setHeightInches] = useState(0);
+    const [weight, setWeight] = useState(0);
 
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
@@ -32,11 +35,14 @@ function Signup() {
 
     const addUser = async () => {
         try {
+            const totalHeightInches = heightFeet * 12 + heightInches;
             const docRef = await addDoc(userCollectionRef, {
                 name: name,
                 uid: auth.currentUser.uid,
                 birthday: birthday,
                 isCoach: isCoach,
+                height: totalHeightInches,
+                weight: weight,
                 coachId: isCoach ? "" : null // Set coachId to null if user is not a coach
             });
             console.log("Document written with ID: ", docRef.id);
@@ -81,6 +87,34 @@ function Signup() {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <br />
+            <label htmlFor="weight" style={{ fontSize: "14px" }}>Weight:  </label>
+            <input
+                placeholder="lbs"
+                type="number"
+                value={weight}
+                onChange={(e) => setWeight(parseInt(e.target.value))}
+            />
+            <br />
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <label htmlFor="height" style={{ fontSize: "14px", marginRight: "5px" }}>Height: </label>
+                <div>
+                    <select value={heightFeet} onChange={(e) => setHeightFeet(parseInt(e.target.value))}>
+                        {Array.from({ length: 8 }, (_, i) => i).map((value) => (
+                            <option key={value} value={value}>
+                                {value} ft
+                            </option>
+                        ))}
+                    </select>
+                    <select value={heightInches} onChange={(e) => setHeightInches(parseInt(e.target.value))}>
+                        {Array.from({ length: 13 }, (_, i) => i).map((value) => (
+                            <option key={value} value={value}>
+                                {value} in
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
 
             <label htmlFor="isCoach" style={{ fontSize: "14px" }}>Are you a health coach?  </label>
             <input
@@ -89,6 +123,7 @@ function Signup() {
                 checked={isCoach}
                 onChange={(e) => setIsCoach(e.target.checked)}
             />
+
             <br />
             <button className={'button'} onClick={createAccount}>Create Account</button>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
