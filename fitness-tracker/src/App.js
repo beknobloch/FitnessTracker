@@ -5,6 +5,7 @@ import Start from './pages/Start';
 import React from 'react';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import Settings from './pages/Settings';
 import Home from './pages/Home'
 import Coach from './pages/Coach';
 import SelectCoach from './pages/SelectCoach'
@@ -22,6 +23,7 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/start" element={<Start />}/>
               <Route path="/signup" element={<Signup/>}/>
+              <Route path="/settings" element={<Settings />} />
               <Route path="/login" element={<Login />}/>
               <Route path="/coach" element={<Coach />}/>
               <Route path="/select-coach" element={<SelectCoach />} />
