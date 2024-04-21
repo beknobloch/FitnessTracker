@@ -1,5 +1,5 @@
 import { db } from "../config/firebase"
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 
 // given a user id and field, returns the field's value on the database
 const getValue = async (uid, field) => {
@@ -33,9 +33,30 @@ const compareValue = async (uid, field, expectedValue) => {
     }
 }
 
+// given a user id, field, and value, pushes data to firebase
+const pushData = async (uid, field, value) => {
+    try{
+        const q = query(collection(db, "users"), where("uid", "==", uid));
+        const docId = (await getDocs(q)).docs[0].id;
+        const userCollectionRef = doc(db, "users", docId);
+
+        await updateDoc(userCollectionRef, {
+            [field]: value
+        });
+
+
+    }catch(e){
+        if(!uid){
+            console.log('no user id')
+        }else{
+            console.log(e)
+        }
+    }
+}
 const Query = {
     getValue,
-    compareValue
+    compareValue,
+    pushData
 }
 
 export default Query

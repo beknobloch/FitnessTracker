@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from "../../config/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import Query from "../Query";
 
-const FitbitGoalData = ({ accessToken }) => {
+const FitbitGoalData = ({ accessToken, userType }) => {
 
     // stores the original goals from the most recent fetch
     const [goals, setGoals] = useState({});
@@ -37,6 +38,11 @@ const FitbitGoalData = ({ accessToken }) => {
         fetchUsers();
     }, []);
 
+    // goals if trainee
+    useEffect( () => {
+        if (accessToken && userType !== 'coach') { getGoals(accessToken) };
+    }, [accessToken])
+
     const handleUserSelect = (userId) => {
         setSelectedUserId(userId);
     };
@@ -68,6 +74,10 @@ const FitbitGoalData = ({ accessToken }) => {
         setNewGoals(goalData['goals'])
         setDisplayGoals(true)
         
+        // uploads goals to firebase if not a coach
+        if(userType !== 'coach'){
+            await Query.pushData(auth?.currentUser?.uid, 'goals', goalData['goals'])
+        }
     };
 
     // pushes new goal values, only pushes changed goals
@@ -91,6 +101,7 @@ const FitbitGoalData = ({ accessToken }) => {
                     await APIRequest(timeSeriesEndpoint, timeSeriesHeaders)
                 }
             }
+
             // displays the updated goal
             await getGoals(accessToken) 
         }else{
@@ -99,44 +110,60 @@ const FitbitGoalData = ({ accessToken }) => {
     };
 
     return (
-        <div>
-            <button className={'button'} onClick={() => getGoals(accessToken)}>Get Goals</button>
-            {displayGoals && (
-                <>
-                    {Object.entries(goals).map(([key]) => (
-                        <div key={key}>
-                            <label htmlFor={key} style={{fontSize: "14px"}}>{key}: </label>
-                            <input
-                                placeholder={key}
-                                type='number'
-                                min="1"
-                                value={newGoals[key]}
-                                onChange={(e) => setNewGoals(prevState => ({
-                                    ...prevState,
-                                    [key]: e.target.value
-                                }))}
-                            />
-                        </div>
-                    ))}
-
-                    <label htmlFor="userSelect" style={{fontSize: "14px"}}>Select a user: </label>
-                    <select
-                        id="userSelect"
-                        onChange={(e) => handleUserSelect(e.target.value)}
-                        value={selectedUserId}
-                    >
-                        <option value="">Select a user</option>
-                        {users.map(user => (
-                            <option key={user.id} value={user.uid}>{user.name}</option>
+        <>
+        {userType === 'coach' ? (
+            <div>
+                <button className={'button'} onClick={() => getGoals(accessToken)}>Get Goals</button>
+                {displayGoals && (
+                    <>
+                        {Object.entries(goals).map(([key]) => (
+                            <div key={key}>
+                                <label htmlFor={key} style={{fontSize: "14px"}}>{key}: </label>
+                                <input
+                                    placeholder={key}
+                                    type='number'
+                                    min="1"
+                                    value={newGoals[key]}
+                                    onChange={(e) => setNewGoals(prevState => ({
+                                        ...prevState,
+                                        [key]: e.target.value
+                                    }))}
+                                />
+                            </div>
                         ))}
-                    </select>
 
-                    <br/>
+                        <label htmlFor="userSelect" style={{fontSize: "14px"}}>Select a user: </label>
+                        <select
+                            id="userSelect"
+                            onChange={(e) => handleUserSelect(e.target.value)}
+                            value={selectedUserId}
+                        >
+                            <option value="">Select a user</option>
+                            {users.map(user => (
+                                <option key={user.id} value={user.uid}>{user.name}</option>
+                            ))}
+                        </select>
 
-                    <button className={'button'} onClick={() => sendGoals(accessToken)}>Send new goals</button>
-                </>
-            )}
-        </div>
+                        <br/>
+
+                        <button className={'button'} onClick={() => sendGoals(accessToken)}>Send new goals</button>
+                    </>
+                )}
+            </div>
+        ):(
+            <div>
+                <h3>Here's your activity goals:</h3>
+                {goals && (
+                    <>
+                    {Object.entries(goals).map(([key]) => (
+                        <p key={key}>{key}: {goals[key]}</p>
+                    ))}
+                    </>
+                )}
+            </div>
+        )}
+        
+        </>
     );
 };
 
