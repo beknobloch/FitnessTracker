@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import { auth } from "../config/firebase";
 import { signOut } from "firebase/auth";
 
@@ -7,6 +8,7 @@ import { signOut } from "firebase/auth";
 function SignOut({ loggedIn }){
     const clientId = '23RRWK';
     const clientSecret = 'd7830394ff0e361521dba4551e48b594';
+    const navigate = useNavigate();
 
     //async function that signs out user
     const logout = async () => {
@@ -21,6 +23,7 @@ function SignOut({ loggedIn }){
                 });
             console.log('end')
             await signOut(auth)
+            navigate('/home');  // Redirect to home page after successful sign out
             
         } catch (error) {
             console.log(error)
@@ -38,7 +41,9 @@ function SignOut({ loggedIn }){
     }
 
     return(
-        <button disabled={!loggedIn} onClick={logout} disabledStyle={{backgroundColor: 'gray'}}>Sign out</button>
+        <button onClick={logout} disabled={!loggedIn} style={!loggedIn ? {backgroundColor: 'gray'} : {}}>
+        Sign out
+    </button>
     )
 }
 export default SignOut
