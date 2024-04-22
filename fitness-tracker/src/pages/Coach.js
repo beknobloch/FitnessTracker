@@ -7,7 +7,7 @@ function Coach() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState("");
-    const [goals, setGoals] = useState("No goals, tell your trainee to sign in!")
+    const [goals, setGoals] = useState("")
     const [selectedUserName, setSelectedUserName] = useState("")
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -33,7 +33,16 @@ function Coach() {
         }else{
             setSelectedUserId(userId);
             setSelectedUserName(await Query.getValue(userId, 'name'))
-            setGoals(await Query.getValue(userId, 'goals'))
+
+            let tempGoals = await Query.getValue(userId, 'goals')
+
+            if(tempGoals){
+                setGoals(tempGoals)
+            }else{
+                setGoals('No goals, tell your trainee to sign in!')
+            }
+            
+
         }
     };
 
@@ -85,6 +94,9 @@ function Coach() {
                                 ))}
                                 <button className={'button'} onClick={() => handleSubmit()}>Send new goals</button>
                                 </>
+                            )}
+                            {typeof goals === 'string' && (
+                                <h3>{goals}</h3>
                             )}
                         </div>
                     ):(
