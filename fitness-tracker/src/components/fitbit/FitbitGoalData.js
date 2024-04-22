@@ -156,7 +156,7 @@ const FitbitGoalData = ({ accessToken, userType }) => {
                 {goals && (
                     <>
                     {Object.entries(goals).map(([key]) => (
-                        <p key={key}>{key}: {goals[key]}</p>
+                        <p key={key}>{key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {goals[key]}</p>
                     ))}
                     </>
                 )}
