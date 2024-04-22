@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 import { auth } from "../config/firebase";
 import { signOut } from "firebase/auth";
-
+import { Button } from "@mui/material";
 
 
 function SignOut({ loggedIn }){
@@ -41,9 +41,15 @@ function SignOut({ loggedIn }){
     }
 
     return(
-        <button onClick={logout} disabled={!loggedIn} style={!loggedIn ? {backgroundColor: 'gray'} : {}}>
-        Sign out
-    </button>
+        <Button
+            onClick={logout}
+            disabled={!loggedIn}
+            sx={{ backgroundColor: '#F45D01', '&:hover': { backgroundColor: '#F45D01', color: '#333' } }}
+            variant="contained"
+            color="primary"
+            >
+            Sign out
+        </Button>
     )
 }
 export default SignOut
