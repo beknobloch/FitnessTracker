@@ -70,7 +70,7 @@ function Coach() {
                                 <h3>Here's {selectedUserName.charAt(0).toUpperCase() + selectedUserName.substring(1)}'s activity goals:</h3>
                                 {Object.entries(goals).map(([key]) => (
                                 <div key={key}>
-                                    <label htmlFor={key} style={{fontSize: "14px"}}>{key}: </label>
+                                    <label htmlFor={key} style={{fontSize: "14px"}}>{key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: </label>
                                     <input
                                         placeholder={key}
                                         type='number'
