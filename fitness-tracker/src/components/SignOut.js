@@ -23,7 +23,7 @@ function SignOut({ loggedIn }){
                 });
             console.log('end')
             await signOut(auth)
-            navigate('/home');  // Redirect to home page after successful sign out
+            navigate('/start');  // Redirect to start page after successful sign out
             
         } catch (error) {
             console.log(error)
