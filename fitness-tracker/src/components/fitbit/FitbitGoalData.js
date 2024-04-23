@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from "../../config/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {collection, getDoc, getDocs, query, updateDoc, where} from "firebase/firestore";
 import Query from "../Query";
-
 const FitbitGoalData = ({ accessToken, userType }) => {
 
     // stores the original goals from the most recent fetch
@@ -13,6 +12,7 @@ const FitbitGoalData = ({ accessToken, userType }) => {
     const [newGoals, setNewGoals] = useState();
     const [showPendingGoals, setShowPendingGoals] = useState(false);
     const [users, setUsers] = useState([]);
+    const [isNewGoalState, setIsNewGoalState] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState("");
     const [pendingGoals, setPendingGoals] = useState({});
 
@@ -46,6 +46,11 @@ const FitbitGoalData = ({ accessToken, userType }) => {
         }
     }, [accessToken])
 
+    useEffect(() => {
+        // Run isNewGoal when the component mounts
+        isNewGoal();
+    }, []);
+
     const handleUserSelect = (userId) => {
         setSelectedUserId(userId);
     };
@@ -57,21 +62,23 @@ const FitbitGoalData = ({ accessToken, userType }) => {
 
             const q = query(collection(db, "users"), where("uid", "==", uid));
             const querySnapshot = await getDocs(q);
-            const usersData = querySnapshot.docs.map(doc => {
-                const userData = doc.data();
-                const id = doc.id;
-                const goals = userData.goals || {}; // Retrieve the goals map, default to empty object if undefined
-                const pendingGoals = userData.pendingGoals || {}; // Retrieve the pendingGoals map, default to empty object if undefined
-                return {id, ...userData, goals, pendingGoals}; // Include goals and pendingGoals in the returned object
-            });
+            const userData = querySnapshot.docs[0]?.data() || {};
+            const goals = userData.goals || {}; // Retrieve the goals map, default to empty object if undefined
+            const pendingGoals = userData.pendingGoals || {}; // Retrieve the pendingGoals map, default to empty object if undefined
 
-            if (usersData.length === 0) {
-                console.error('User data not found');
-                return false;
+            // Iterate through the keys of goals
+            for (const key of Object.keys(goals)) {
+                // Check if the goal in goals differs from the corresponding goal in pendingGoals
+                if (goals[key] !== pendingGoals[key]) {
+                    console.log("Different Goals, Displaying 'Show Pending Goals' button");
+                    setIsNewGoalState(true);
+                    return true; // Return true if any goal differs
+                }
             }
 
-            const user = usersData[0]; // Assuming there is only one user document matching the query
-            return Object.entries(user.pendingGoals);
+            // If no differences found, return false
+            console.log("Goals are the same");
+            return false;
         } catch (error) {
             console.error("Error comparing goals:", error);
             return false;
@@ -98,10 +105,92 @@ const FitbitGoalData = ({ accessToken, userType }) => {
         fetchPendingGoals();
     }, []);
 
-
     const handleShowPendingGoals = () => {
         setShowPendingGoals(true);
     };
+
+    const handleReject = async () => {
+        try {
+            // Update firestore field pendingGoals to be equal to their current goals
+            const currentUser = auth?.currentUser;
+            const uid = currentUser.uid;
+
+            // Update firestore field goals to their pendingGoals
+            const usersCollectionRef = collection(db, "users");
+            const querySnapshot = await getDocs(query(usersCollectionRef, where("uid", "==", uid)));
+
+            if (!querySnapshot.empty) {
+                // There should be only one document with the given UID
+                const userDocRef = querySnapshot.docs[0].ref;
+                const userSnapshot = await getDoc(userDocRef);
+
+                if (userSnapshot.exists()) {
+                    // Update the document with selectedCoachId
+                    await updateDoc(userDocRef, { pendingGoals: goals });
+                } else {
+                    console.error("User document does not exist");
+                }
+            } else {
+                console.error("User document not found");
+            }
+
+            // Change isNewGoalState back to false
+            setIsNewGoalState(false);
+
+            // Change showPendingGoals back to false
+            setShowPendingGoals(false);
+
+            // Update pendingGoals to the old goals since user rejected changes
+            setPendingGoals(goals);
+        } catch (error) {
+            console.error("Error rejecting pending goals:", error);
+        }
+    };
+
+    const handleAccept = async () => {
+        try {
+            const currentUser = auth?.currentUser;
+            const uid = currentUser.uid;
+
+            // Update firestore field goals to their pendingGoals
+            const usersCollectionRef = collection(db, "users");
+            const querySnapshot = await getDocs(query(usersCollectionRef, where("uid", "==", uid)));
+
+            if (!querySnapshot.empty) {
+                // There should be only one document with the given UID
+                const userDocRef = querySnapshot.docs[0].ref;
+                const userSnapshot = await getDoc(userDocRef);
+
+                if (userSnapshot.exists()) {
+                    // Update the document with selectedCoachId
+                    await updateDoc(userDocRef, { goals: pendingGoals });
+                } else {
+                    console.error("User document does not exist");
+                }
+            } else {
+                console.error("User document not found");
+            }
+
+            // Changes the newGoals state to be equal to pendingGoals.
+            // This prepares for the push to the Fitbit
+            setNewGoals(pendingGoals);
+
+            // Code that pushes newGoals to fitbit
+            await sendGoals(accessToken);
+
+            // Change isNewGoalState back to false
+            setIsNewGoalState(false);
+
+            // Change showPendingGoals state back to false
+            setShowPendingGoals(false);
+
+            // Update the goals state
+            setGoals(pendingGoals);
+        } catch (error) {
+            console.error("Error accepting pending goals:", error);
+        }
+    };
+
 
     /*  ------------------------------ API Calls ------------------------------  */
 
@@ -145,7 +234,7 @@ const FitbitGoalData = ({ accessToken, userType }) => {
             for (const [key, value] of Object.entries(newGoals)) {
 
                 // checks if a goal has been changed
-                if (goals[key] !== value) {
+                if (goals[key] !== newGoals[key]) {
                     const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/goals/daily.json?type=${key}&value=${value}`;
                     const timeSeriesHeaders = {
                         method: 'POST',
@@ -186,35 +275,28 @@ const FitbitGoalData = ({ accessToken, userType }) => {
                                     {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {goals[key]}
                                 </p>
                             ))}
-                            {/* Conditionally render the "Show Pending Goals" button if isNewGoals returns true and showPendingGoals is false */}
-                            {isNewGoal() && showPendingGoals === false && (
-                                <button className={'button'} onClick={() => handleShowPendingGoals()}>Show Pending
-                                    Goals</button>
+                            {/* Conditionally render the "Show Pending Goals" button */}
+                            {isNewGoalState === true && showPendingGoals === false && (
+                                <button className={'button'} onClick={() => handleShowPendingGoals()}>Show Pending Goals</button>
                             )}
-                            {/* Conditionally render the "Accept" and "Reject" buttons if showPendingGoals is true */}
+                            {/* Conditionally render the "Accept" and "Reject" buttons */}
                             {showPendingGoals === true && (
                                 <>
                                     {/* Render pending goals if they exist */}
-                                    {(
+                                    {Object.keys(pendingGoals).length > 0 && (
                                         <div>
-                                            {/* Render pending goals if they exist */}
-                                            {Object.keys(pendingGoals).length > 0 && (
-                                                <div>
-                                                    <h4>Pending Goals:</h4>
-                                                    {Object.entries(pendingGoals).map(([key, value]) => (
-                                                        <p key={key}>
-                                                            {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {value}
-                                                        </p>
-                                                    ))}
-                                                </div>
-                                            )}
+                                            <h4>Pending Goals:</h4>
+                                            {Object.entries(pendingGoals).map(([key, value]) => (
+                                                <p key={key}>
+                                                    {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {value}
+                                                </p>
+                                            ))}
                                         </div>
                                     )}
                                     {/* Your accept and reject buttons */}
-                                    <button className={'button'}>Reject</button>
-                                    <button className={'button'}>Accept</button>
+                                    <button className={'button'} onClick={handleReject}>Reject</button>
+                                    <button className={'button'} onClick={handleAccept}>Accept</button>
                                 </>
-
                             )}
                         </>
                     )}
@@ -223,7 +305,6 @@ const FitbitGoalData = ({ accessToken, userType }) => {
             <br/>
         </>
     );
-
 };
 
 export default FitbitGoalData;
