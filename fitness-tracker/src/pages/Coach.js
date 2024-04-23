@@ -6,7 +6,7 @@ function Coach() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState("");
-    const [goals, setGoals] = useState("")
+    const [goals, setGoals] = useState(0)
     const [selectedUserName, setSelectedUserName] = useState("")
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -40,7 +40,7 @@ function Coach() {
             }else{
                 setGoals('No goals, tell your trainee to sign in!')
             }
-            
+
 
         }
     };
@@ -86,7 +86,7 @@ function Coach() {
                                         value={goals[key]}
                                         onChange={(e) => setGoals(prevState => ({
                                             ...prevState,
-                                            [key]: e.target.value
+                                            [key]: parseInt(e.target.value)
                                         }))}
                                     />
                                 </div>
