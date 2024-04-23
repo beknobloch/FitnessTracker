@@ -119,22 +119,25 @@ const FitbitDataComponent = ({ redirectTo }) => {
     return (
         <>
         {redirectTo === 'home' ? (
-            <div className={"container"}>
-                <div className="left-panel">
-                   {/* Content for the left panel */}
-                   <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}</h2>
-                   <FitbitDailyData accessToken={accessToken}/>
+            <div>
+                <div className={"container"}>
+                    <div className="left-panel">
+                    {/* Content for the left panel */}
+                    <h2>Hi {profile && profile.user ? profile.user.fullName : "World"}</h2>
+                    <FitbitDailyData accessToken={accessToken}/>
+                    </div>
+                    <div className="right-panel">
+                    {/* Content for the right panel */}
+                    <hr></hr>
+                    <FitbitStepGraph accessToken={accessToken}/>
+                    </div>
                 </div>
-                <div className="right-panel">
-                {/* Content for the right panel */}
-                   <hr></hr>
-                   <FitbitStepGraph accessToken={accessToken}/>
-                </div>
+                <FitbitGoalData accessToken={accessToken} />
             </div>
         ):(
             <div>
                 <p>Coach</p>
-                <FitbitGoalData accessToken={accessToken}/>
+                <FitbitGoalData accessToken={accessToken} userType={'coach'}/>
             </div>
         )}
  
