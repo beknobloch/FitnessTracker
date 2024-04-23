@@ -232,45 +232,55 @@ const FitbitGoalData = ({ accessToken, userType }) => {
                     )}
                 </div>
             ) : (
-                <div>
-                    <h3>Here's your activity goals:</h3>
-                    {goals && (
-                        <>
-                            {Object.entries(goals).map(([key]) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ paddingRight: '20px', marginLeft: '20px' }}>
+                        <h3>Here's your activity goals:</h3>
+                        {goals && (
+                            Object.entries(goals).sort().map(([key, value]) => (
                                 <p key={key}>
-                                    {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {goals[key]}
+                                    {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {value}
                                 </p>
-                            ))}
-                            {/* Conditionally render the "Show Pending Goals" button */}
-                            {isNewGoalState === true && showPendingGoals === false && (
-                                <button className={'button'} onClick={() => handleShowPendingGoals()}>Show Pending Goals</button>
-                            )}
-                            {/* Conditionally render the "Accept" and "Reject" buttons */}
-                            {showPendingGoals === true && (
-                                <>
-                                    {/* Render pending goals if they exist */}
-                                    {Object.keys(pendingGoals).length > 0 && (
-                                        <div>
-                                            <h4>Pending Goals:</h4>
-                                            {Object.entries(pendingGoals).map(([key, value]) => (
-                                                <p key={key}>
-                                                    {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {value}
-                                                </p>
-                                            ))}
-                                        </div>
-                                    )}
-                                    {/* Your accept and reject buttons */}
-                                    <button className={'button'} onClick={handleReject}>Reject</button>
-                                    <button className={'button'} onClick={handleAccept}>Accept</button>
-                                </>
-                            )}
-                        </>
+                            ))
+                        )}
+                    </div>
+                    <div>
+                        {/* Conditionally render the "Show Pending Goals" button */}
+                        {isNewGoalState === true && showPendingGoals === false && (
+                            <button className={'button'} onClick={() => handleShowPendingGoals()}>Show Pending Goals</button>
+                        )}
+                        {isNewGoalState === false && (
+                            <p>No pending goals!</p>
+                        )}
+                        {/* Conditionally render the "Accept" and "Reject" buttons */}
+                        {showPendingGoals === true && (
+                            <>
+                                {/* Render pending goals if they exist */}
+                                {Object.keys(pendingGoals).length > 0 && (
+                                    <div>
+                                        <h4>Pending Goals:</h4>
+                                        {Object.entries(pendingGoals).sort().map(([key, value]) => (
+                                            <p key={key}>
+                                                {key.charAt(0).toUpperCase() + key.split(/(?=[A-Z])/).join(' ').substring(1)}: {value}
+                                            </p>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                    {/* Your accept and reject buttons */}
+                    {showPendingGoals && (
+                        <div style={{ marginLeft: '20px', display: 'flex', flexDirection: 'column' }}>
+                            <button className={'button'} onClick={handleAccept}>Accept</button>
+                            <br />
+                            <button className={'button'} onClick={handleReject}>Reject</button>
+                        </div>
                     )}
                 </div>
             )}
             <br/>
         </>
-    );
+    )
 };
 
 export default FitbitGoalData;
