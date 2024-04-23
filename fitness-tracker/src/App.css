@@ -34,6 +34,7 @@
 .left-panel, .right-panel {
   flex: 1; /* Make both panels equally flexible */
   padding: 20px; /* Add padding for spacing */
+  margin: 10px;
 }
 
 .left-panel {
@@ -45,7 +46,11 @@
 }
 
 .right-panel {
- /* Style right panel */
+  background-color: #FFFFFF; /* Style right panel background color */
+  border-top-left-radius: 10px; /* Rounded top-left corner */
+  border-bottom-left-radius: 10px; /* Rounded bottom-left corner */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .button {
