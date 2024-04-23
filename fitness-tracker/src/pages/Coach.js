@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { auth } from '../config/firebase';
-import FitbitDataComponent from '../components/fitbit/FitbitDataComponent.js';
 import Query from "../components/Query.js";
 
 function Coach() {

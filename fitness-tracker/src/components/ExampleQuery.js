@@ -1,6 +1,6 @@
 import React, { useState, useEffect }from "react";
 import { db } from "../config/firebase";
-import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc} from 'firebase/firestore';
+import { getDocs, collection} from 'firebase/firestore';
 
 //this component shows how to query and display data in firebase
 function ExampleQuery(){

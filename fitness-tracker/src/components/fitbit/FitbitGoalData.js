@@ -9,35 +9,9 @@ const FitbitGoalData = ({ accessToken, userType }) => {
     const [displayGoals, setDisplayGoals] = useState(false);
 
     // initially this will match the original goals but when the user changes a goal's value, this is the object that's updated
-    const [newGoals, setNewGoals] = useState();
     const [showPendingGoals, setShowPendingGoals] = useState(false);
-    const [users, setUsers] = useState([]);
     const [isNewGoalState, setIsNewGoalState] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState("");
     const [pendingGoals, setPendingGoals] = useState({});
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                // Fetch users with matching CoachId
-                const userID = auth?.currentUser?.uid;
-                // Logging user ID to display the coaches ID (For debugging)
-                console.log("Current user UID:", userID);
-                const q = query(collection(db, "users"), where("coachId", "==", userID));
-                const querySnapshot = await getDocs(q);
-                const usersData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setUsers(usersData);
-                console.log("Fetched users:", usersData); // Log the fetched users
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        };
-
-        fetchUsers();
-    }, []);
 
     // goals if trainee
     useEffect(() => {
@@ -50,10 +24,6 @@ const FitbitGoalData = ({ accessToken, userType }) => {
         // Run isNewGoal when the component mounts
         isNewGoal();
     }, []);
-
-    const handleUserSelect = (userId) => {
-        setSelectedUserId(userId);
-    };
 
     const isNewGoal = async () => {
         try {
@@ -171,10 +141,6 @@ const FitbitGoalData = ({ accessToken, userType }) => {
                 console.error("User document not found");
             }
 
-            // Changes the newGoals state to be equal to pendingGoals.
-            // This prepares for the push to the Fitbit
-            setNewGoals(pendingGoals);
-
             // Code that pushes newGoals to fitbit
             await sendGoals(accessToken);
 
@@ -216,25 +182,25 @@ const FitbitGoalData = ({ accessToken, userType }) => {
         const goalData = await APIRequest(endpoint, headers)
         console.log(goalData)
         setGoals(goalData['goals'])
-        setNewGoals(goalData['goals'])
         setDisplayGoals(true)
 
         // uploads goals to firebase if not a coach
         if (userType !== 'coach') {
             await Query.pushData(auth?.currentUser?.uid, 'goals', goalData['goals'])
+            console.log('pushed to firebase')
         }
     };
 
     // pushes new goal values, only pushes changed goals
     const sendGoals = async (accessToken) => {
         // checks if any goal has been changed
-        if (newGoals !== goals) {
+        if (pendingGoals !== goals) {
 
             // iterates through each type of goal in newGoals (entry = a type of goal)
-            for (const [key, value] of Object.entries(newGoals)) {
+            for (const [key, value] of Object.entries(pendingGoals)) {
 
                 // checks if a goal has been changed
-                if (goals[key] !== newGoals[key]) {
+                if (goals[key] !== pendingGoals[key]) {
                     const timeSeriesEndpoint = `https://api.fitbit.com/1/user/-/activities/goals/daily.json?type=${key}&value=${value}`;
                     const timeSeriesHeaders = {
                         method: 'POST',
