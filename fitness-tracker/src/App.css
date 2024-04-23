@@ -34,7 +34,7 @@
 .left-panel, .right-panel {
   flex: 1; /* Make both panels equally flexible */
   padding: 20px; /* Add padding for spacing */
-  margin: 10px;
+  margin: 100px 10px;
 }
 
 .left-panel {
