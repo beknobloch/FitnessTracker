@@ -192,7 +192,17 @@ function Settings() {
             )}
             <div style={buttonContainerStyle}>
               {editMode ? (
+                <div>
+                {!userDetails.isCoach && ( // Check if user is not a coach
+                  <Button
+                    variant="contained"
+                    onClick={() => navigate("/select-coach", { isCoach: false })} // Navigate to SelectCoach if not a coach
+                  >
+                    Edit Coach
+                  </Button>
+                )}
                 <Button variant="contained" onClick={handleEdit}>Save Changes</Button>
+                </div>
               ) : (
                 <Button variant="contained" onClick={() => setEditMode(true)}>Edit</Button>
               )}
