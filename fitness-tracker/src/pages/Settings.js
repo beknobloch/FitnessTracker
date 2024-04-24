@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Button, CircularProgress, TextField } from "@mui/material";
+import { Typography, Button, CircularProgress, TextField, Card, CardContent, Grid } from "@mui/material";
 import { auth, db } from "../config/firebase";
 import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 import SignOut from "../components/SignOut";
@@ -22,6 +22,16 @@ const userInfoStyle = {
   marginBottom: "10px",
 };
 
+const boldTextStyle = {
+  fontWeight: "bold",
+};
+
+const buttonContainerStyle = {
+  display: "flex",
+  justifyContent: "center", // Center the button
+  marginTop: "20px",
+};
+
 function Settings() {
   const [userDetails, setUserDetails] = useState(null);
   const [coachDetails, setCoachDetails] = useState(null);
@@ -41,6 +51,7 @@ function Settings() {
       navigate("/login"); // Redirect to login if not logged in
     }
   }, );
+
   const fetchCoachData = async (coachId) => {
     const usersCollectionRef = collection(db, "users");
     const q = query(usersCollectionRef, where("uid", "==", coachId));
@@ -58,19 +69,20 @@ function Settings() {
       console.error("Error fetching coach details:", error);
     }
   };
+
   const handleEdit = async () => {
     try {
-    const userQuery = query(collection(db, "users"), where("uid", "==", auth.currentUser.uid));
-    const querySnapshot = await getDocs(userQuery);
+      const userQuery = query(collection(db, "users"), where("uid", "==", auth.currentUser.uid));
+      const querySnapshot = await getDocs(userQuery);
 
-    if (querySnapshot.empty) {
-      console.error("No matching documents.");
-      return;
-    }
-    const userDoc = querySnapshot.docs[0];
-    const userRef = doc(db, "users", userDoc.id);
+      if (querySnapshot.empty) {
+        console.error("No matching documents.");
+        return;
+      }
+      const userDoc = querySnapshot.docs[0];
+      const userRef = doc(db, "users", userDoc.id);
 
-    const newData = {};
+      const newData = {};
 
       if (editedName !== "") newData.name = editedName;
       if (editedBirthday !== "") newData.birthday = editedBirthday;
@@ -80,7 +92,7 @@ function Settings() {
       setEditMode(false);
       fetchData();
 
-       // Clear the input fields
+      // Clear the input fields
       setEditedName("");
       setEditedBirthday("");
       setEditedHeight("");
@@ -110,6 +122,7 @@ function Settings() {
       console.error("Error fetching user details:", error);
     }
   };
+
   return (
     <div style={containerStyle}>
       <Typography variant="h2" style={headerStyle}>
@@ -118,63 +131,82 @@ function Settings() {
       {loading ? (
         <CircularProgress />
       ) : userDetails ? (
-        <div>
-        {editMode ? (
-          <div>
-            <TextField
-              label="Name"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-            />
-            <TextField
-              label="Birthday"
-              value={editedBirthday}
-              onChange={(e) => setEditedBirthday(e.target.value)}
-            />
-            <TextField
-              label="Height"
-              value={editedHeight}
-              onChange={(e) => setEditedHeight(e.target.value)}
-            />
-            <TextField
-              label="Weight"
-              value={editedWeight}
-              onChange={(e) => setEditedWeight(e.target.value)}
-            />
-            <Button variant="contained" onClick={handleEdit}>Save Changes</Button>
-          </div>
-        ) : (
-        <div>
-          <Typography variant="body1" style={userInfoStyle}>
-            Email: {auth.currentUser.email}
-          </Typography>
-          <Typography variant="body1" style={userInfoStyle}>
-            Name: {userDetails.name}
-          </Typography>
-          <Typography variant="body1" style={userInfoStyle}>
-            Birthday: {userDetails.birthday}
-          </Typography>
-          <Typography variant="body1" style={userInfoStyle}>
-            Height: {userDetails.height ? `${userDetails.height} inches` : "Not specified"}
-          </Typography>
-          <Typography variant="body1" style={userInfoStyle}>
-            Weight: {userDetails.weight ? `${userDetails.weight} lbs` : "Not specified"}
-          </Typography>
-          <Typography variant="body1" style={userInfoStyle}>
-            Coach: {userDetails.coachId && coachDetails ? `${coachDetails.name} `: "Not specified"}
-          </Typography>
-          <Button variant="contained" sx={{ backgroundColor: '#F45D01', '&:hover': { backgroundColor: '#F45D01', color: '#333' } }} onClick={() => setEditMode(true)}>Edit</Button>
-          <div style={{ marginTop: "20px" }}> {/* Adjust the margin as needed */}
-          <SignOut loggedIn={!!auth.currentUser} />
-          </div>
-        </div>
-        )}
-        </div>
+        <Card variant="outlined">
+          <CardContent>
+            {editMode ? (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Name"
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Birthday"
+                    value={editedBirthday}
+                    onChange={(e) => setEditedBirthday(e.target.value)}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Height"
+                    value={editedHeight}
+                    onChange={(e) => setEditedHeight(e.target.value)}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Weight"
+                    value={editedWeight}
+                    onChange={(e) => setEditedWeight(e.target.value)}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              <div>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Email:</span> {auth.currentUser.email}
+                </Typography>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Name:</span> {userDetails.name}
+                </Typography>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Birthday:</span> {userDetails.birthday}
+                </Typography>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Height:</span> {userDetails.height ? `${userDetails.height} inches` : "Not specified"}
+                </Typography>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Weight:</span> {userDetails.weight ? `${userDetails.weight} lbs` : "Not specified"}
+                </Typography>
+                <Typography variant="body1" style={userInfoStyle}>
+                  <span style={boldTextStyle}>Coach:</span> {userDetails.coachId && coachDetails ? `${coachDetails.name} ` : "Not specified"}
+                </Typography>
+              </div>
+            )}
+            <div style={buttonContainerStyle}>
+              {editMode ? (
+                <Button variant="contained" onClick={handleEdit}>Save Changes</Button>
+              ) : (
+                <Button variant="contained" onClick={() => setEditMode(true)}>Edit</Button>
+              )}
+              
+            </div>
+          </CardContent>
+          
+        </Card>
       ) : (
         <Typography variant="body1">Loading...</Typography>
       )}
       <br></br>
-      <Button variant="contained" sx={{ backgroundColor: '#F45D01', '&:hover': { backgroundColor: '#F45D01', color: '#333' } }} onClick={() => navigate("/home")}>
+      <SignOut loggedIn={!!auth.currentUser} />
+      <Button variant="contained" sx={{ backgroundColor: '#F45D01', '&:hover': { backgroundColor: '#F45D01', color: '#333' }, marginTop: '20px' }} onClick={() => navigate("/home")}>
         Go to Home
       </Button>
     </div>
