@@ -13,7 +13,7 @@ const FitbitDataComponent = ({ redirectTo }) => {
     /************ Change for your app *************/
     const clientId = config.client_id;
     const clientSecret = config.client_secret;
-    const redirectUri = `http://localhost:3000/${redirectTo}`; // the redirectURL in FitBit app
+    const redirectUri = `http://localhost:3000/${redirectTo}/`; // the redirectURL in FitBit app
 
     /*  ------------------------------ Authorization ------------------------------  */
 
